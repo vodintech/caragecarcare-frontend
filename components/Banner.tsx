@@ -4,22 +4,22 @@ import { useEffect, useState } from "react";
 import { BsChevronDown, BsArrowLeft, BsSearch } from "react-icons/bs";
 import SocialMedia from "@/components/SocialMedia";
 
-type CarModel = {
+interface CarModel {
   name: string;
   imageUrl?: string;
   fuel_types?: string[];
-};
+}
 
-type CarBrand = {
+interface CarBrand {
   brand: string;
   logoUrl?: string;
   models: CarModel[];
-};
+}
 
-type FuelType = {
+interface FuelType {
   type: string;
-  iconUrl: string;
-};
+  url: string;
+}
 
 const Banner = () => {
   const [brands, setBrands] = useState<CarBrand[]>([]);
@@ -27,43 +27,35 @@ const Banner = () => {
   const [selectedModel, setSelectedModel] = useState<CarModel | null>(null);
   const [selectedFuel, setSelectedFuel] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<"form" | "brands" | "models" | "fuels">("form");
   const [brandSearch, setBrandSearch] = useState("");
   const [modelSearch, setModelSearch] = useState("");
   const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
 
-  // Fetch initial data
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         setIsLoading(true);
         
         // Fetch brands data
-        const brandsRes = await fetch("http://localhost:8000/car/all-brands");
+        const [brandsRes, fuelsRes] = await Promise.all([
+          fetch("http://localhost:8000/car/all-brands"),
+          fetch("http://localhost:8000/car/fuel-icons")
+        ]);
+
+        if (!brandsRes.ok) throw new Error("Failed to fetch brands");
+        if (!fuelsRes.ok) throw new Error("Failed to fetch fuel icons");
+
         const brandsData = await brandsRes.json();
-        
-        // Fetch brand logos
-        const logosRes = await fetch("http://localhost:8000/car/brand-logos");
-        const logosData = await logosRes.json();
-        
-        // Combine brands with their logos
-        const brandsWithLogos = brandsData.map((brand: any) => ({
-          ...brand,
-          logoUrl: logosData.find((l: any) => l.brand === brand.brand)?.url || ""
-        }));
-        
-        setBrands(brandsWithLogos);
-        
-        // Fetch fuel icons
-        const fuelsRes = await fetch("http://localhost:8000/car/fuel-icons");
         const fuelsData = await fuelsRes.json();
+
+        setBrands(brandsData);
         setFuelIcons(fuelsData);
-        
         setError(null);
       } catch (err) {
-        setError("Failed to load initial data. Please try again later.");
+        setError(err instanceof Error ? err.message : "Failed to load data");
         console.error("Fetch error:", err);
       } finally {
         setIsLoading(false);
@@ -73,34 +65,13 @@ const Banner = () => {
     fetchInitialData();
   }, []);
 
-  // Fetch model images when brand is selected
-  useEffect(() => {
-    if (selectedBrand) {
-      const fetchModelImages = async () => {
-        try {
-          const res = await fetch(
-            `http://localhost:8000/car/model-images/${encodeURIComponent(selectedBrand.brand)}`
-          );
-          const data = await res.json();
-          
-          setSelectedBrand(prev => {
-            if (!prev) return null;
-            return {
-              ...prev,
-              models: prev.models.map(model => ({
-                ...model,
-                imageUrl: data.find((m: any) => m.model === model.name)?.url || ""
-              }))
-            };
-          });
-        } catch (err) {
-          console.error("Error fetching model images:", err);
-        }
-      };
-      
-      fetchModelImages();
-    }
-  }, [selectedBrand]);
+  const filteredBrands = brands.filter((brand) =>
+    brand.brand.toLowerCase().includes(brandSearch.toLowerCase())
+  );
+
+  const filteredModels = (selectedBrand?.models || []).filter((model) =>
+    model.name.toLowerCase().includes(modelSearch.toLowerCase())
+  );
 
   const handleBrandSelect = (brand: CarBrand) => {
     setSelectedBrand(brand);
@@ -150,27 +121,32 @@ const Banner = () => {
       if (!response.ok) throw new Error("Submission failed");
       
       const result = await response.json();
-      alert(result.message);
+      alert(result.message || "Request submitted successfully");
       setSelectedBrand(null);
       setSelectedModel(null);
       setSelectedFuel(null);
       setPhone("");
       setError(null);
     } catch (err) {
-      setError("Submission failed. Please try again.");
       console.error("Submit error:", err);
+      setError(err instanceof Error ? err.message : "Submission failed");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredBrands = brands.filter(brand =>
-    brand.brand.toLowerCase().includes(brandSearch.toLowerCase())
-  );
-
-  const filteredModels = selectedBrand?.models.filter(model =>
-    model.name.toLowerCase().includes(modelSearch.toLowerCase())
-  ) || [];
+  if (isLoading) {
+    return (
+      <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
+        <div className="absolute inset-0 bg-gray-100 z-0" />
+        <div className="relative z-20 w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
+          <div className="w-full max-w-lg bg-white shadow-xl p-10 rounded-xl text-center">
+            <p>Loading car data...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
@@ -235,7 +211,7 @@ const Banner = () => {
                 className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md text-lg"
                 disabled={isLoading}
               >
-                {isLoading ? "LOADING..." : "CHECK PRICES FOR FREE"}
+                {isLoading ? "PROCESSING..." : "CHECK PRICES FOR FREE"}
               </button>
 
               <div className="mt-8 flex justify-between text-sm text-gray-600">
@@ -278,29 +254,28 @@ const Banner = () => {
               
               <div className="h-64 overflow-y-auto">
                 {filteredBrands.length === 0 ? (
-                  <p className="text-center py-8 text-gray-500">No brands found</p>
+                  <p className="text-center py-8 text-gray-500">
+                    {brands.length === 0 ? "No brands available" : "No matching brands found"}
+                  </p>
                 ) : (
-                  <div className="grid grid-cols-3 gap-4">
-                    {filteredBrands.map((brand) => (
-                      <div
-                        key={brand.brand}
-                        className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
-                        onClick={() => handleBrandSelect(brand)}
-                      >
-                        {brand.logoUrl && (
-                          <img
-                            src={`http://localhost:8000${brand.logoUrl}`}
-                            alt={brand.brand}
-                            className="w-16 h-16 object-contain mb-2"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        )}
-                        <p className="text-sm font-medium text-center">{brand.brand}</p>
-                      </div>
-                    ))}
-                  </div>
+                  // Update your image rendering to handle URLs properly
+<div className="grid grid-cols-3 gap-4">
+  {filteredBrands.map((brand) => (
+    <div key={brand.brand} className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => handleBrandSelect(brand)}>
+      <div className="w-16 h-16 mb-2 flex items-center justify-center">
+        <img
+          src={`http://localhost:8000${brand.logoUrl}`}
+          alt={brand.brand}
+          className="max-w-full max-h-full object-contain"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none'
+          }}
+        />
+      </div>
+      <p className="text-sm font-medium text-center">{brand.brand}</p>
+    </div>
+  ))}
+</div>
                 )}
               </div>
             </div>
@@ -310,7 +285,7 @@ const Banner = () => {
             <div className="w-full">
               <div className="flex items-center mb-4">
                 <button 
-                  onClick={() => setCurrentView("brands")}
+                  onClick={handleBack}
                   className="mr-2 text-gray-500 hover:text-black"
                 >
                   <BsArrowLeft size={20} />
@@ -331,7 +306,9 @@ const Banner = () => {
               
               <div className="h-64 overflow-y-auto">
                 {filteredModels.length === 0 ? (
-                  <p className="text-center py-8 text-gray-500">No models found</p>
+                  <p className="text-center py-8 text-gray-500">
+                    {selectedBrand.models.length === 0 ? "No models available" : "No matching models found"}
+                  </p>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
                     {filteredModels.map((model) => (
@@ -342,13 +319,14 @@ const Banner = () => {
                       >
                         {model.imageUrl && (
                           <img
-                            src={`http://localhost:8000${model.imageUrl}`}
-                            alt={model.name}
-                            className="w-16 h-16 object-contain mb-2"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
+                          src={`http://localhost:8000${model.imageUrl}`}
+                          alt={model.name}
+                          className="w-16 h-16 object-contain mb-2"
+                          onError={(e) => {
+                            console.error("Failed to load image:", e.currentTarget.src);
+                            (e.target as HTMLImageElement).style.display = 'none'
+                          }}
+                        />
                         )}
                         <p className="font-medium text-center">{model.name}</p>
                       </div>
@@ -363,7 +341,7 @@ const Banner = () => {
             <div className="w-full">
               <div className="flex items-center mb-4">
                 <button 
-                  onClick={() => setCurrentView("models")}
+                  onClick={handleBack}
                   className="mr-2 text-gray-500 hover:text-black"
                 >
                   <BsArrowLeft size={20} />
@@ -372,30 +350,36 @@ const Banner = () => {
               </div>
               
               <div className="h-64 overflow-y-auto">
-                <div className="grid grid-cols-2 gap-3">
-                  {selectedModel.fuel_types.map((fuel) => {
-                    const fuelIcon = fuelIcons.find(f => f.type === fuel);
-                    return (
-                      <div
-                        key={fuel}
-                        className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
-                        onClick={() => handleFuelSelect(fuel)}
-                      >
-                        {fuelIcon?.iconUrl && (
-                          <img
-                            src={`http://localhost:8000${fuelIcon.iconUrl}`}
-                            alt={fuel}
-                            className="w-16 h-16 object-contain mb-2"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        )}
-                        <p className="font-medium text-center">{fuel}</p>
-                      </div>
-                    );
-                  })}
-                </div>
+                {selectedModel.fuel_types.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">No fuel types available</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {selectedModel.fuel_types.map((fuel) => {
+                      const fuelIcon = fuelIcons.find(f => 
+                        f.type.toLowerCase() === fuel.toLowerCase()
+                      );
+                      return (
+                        <div
+                          key={fuel}
+                          className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
+                          onClick={() => handleFuelSelect(fuel)}
+                        >
+                          {fuelIcon?.url && (
+                            <img
+                              src={fuelIcon.url}
+                              alt={fuel}
+                              className="w-16 h-16 object-contain mb-2"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          )}
+                          <p className="font-medium text-center">{fuel}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}
