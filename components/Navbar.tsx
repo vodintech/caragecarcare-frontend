@@ -28,6 +28,8 @@ const Navbar = () => {
             src="/media/caragecarcare.png"
             alt="CarageCarCare Logo"
             className="h-9 w-9 object-contain rounded-full"
+            width={500}
+            height={300} 
           />
           <span className="text-xl font-bold text-black">CarageCarCare</span>
         </div>
