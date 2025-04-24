@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = {
+  images: {
+    domains: [
+      'localhost',         
+      'caragecarcare.vercel.app', 
+      'https://caragecarcare-backend.onrender.com'  
+    ],
+  },
+}
