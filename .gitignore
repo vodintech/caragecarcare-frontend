@@ -45,6 +45,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-components\extra.tsx
+extra.tsx
 .env.local

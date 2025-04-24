@@ -1,4 +1,4 @@
-"use client";
+{/*"use client";
 
 import { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
@@ -92,7 +92,7 @@ const Banner = () => {
 
   return (
     <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
-      {/* Background Image */}
+      {/* Background Image */}{/*
       <div
         className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0"
         style={{
@@ -100,7 +100,7 @@ const Banner = () => {
         }}
       />
 
-      {/* Form Section */}
+      {/* Form Section */}{/*
       <div className="relative z-20 w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-lg bg-white shadow-xl p-10 rounded-xl">
           {showVehicleSelection ? (
@@ -155,7 +155,7 @@ const Banner = () => {
         </div>
       </div>
 
-      {/* Social Media Handles */}
+      {/* Social Media Handles */}{/*
       <div className="fixed bottom-10 right-6 flex flex-col space-y-4 z-20">
         <a
           href="https://www.facebook.com/caragecarcare/"
@@ -187,7 +187,7 @@ export default Banner;
 
 
 
-
+*/}
 
 
 

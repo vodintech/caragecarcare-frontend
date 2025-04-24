@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BsChevronDown, BsArrowLeft, BsSearch } from "react-icons/bs";
 import SocialMedia from "@/components/SocialMedia";
+import Image from 'next/image';
 
 interface CarModel {
   name: string;
@@ -144,7 +145,7 @@ const Banner = () => {
 
   const renderImage = (url: string, alt: string, className = "") => (
     <div className={`w-16 h-16 flex items-center justify-center ${className}`}>
-      <img
+      <Image 
         src={`NEXT_PUBLIC_API_URL${url}`}
         alt={alt}
         className="max-w-full max-h-full object-contain"
