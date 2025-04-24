@@ -149,8 +149,8 @@ const Banner = () => {
       <Image 
         src={`${process.env.NEXT_PUBLIC_API_URL}${url}`}
         alt={alt}
-        width={64}  
-      height={64}
+        width={124}  
+      height={124}
         className="max-w-full max-h-full object-contain"
         onError={(e) => {
           (e.target as HTMLImageElement).style.visibility = 'hidden';
