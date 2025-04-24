@@ -39,24 +39,22 @@ const Banner = () => {
       try {
         setIsLoading(true);
         
-        // Fetch brands data
         const [brandsRes, fuelsRes] = await Promise.all([
           fetch("http://localhost:8000/car/all-brands"),
           fetch("http://localhost:8000/car/fuel-icons")
         ]);
 
-        if (!brandsRes.ok) throw new Error("Failed to fetch brands");
-        if (!fuelsRes.ok) throw new Error("Failed to fetch fuel icons");
+        if (!brandsRes.ok || !fuelsRes.ok) throw new Error("Failed to fetch data");
 
-        const brandsData = await brandsRes.json();
-        const fuelsData = await fuelsRes.json();
+        const [brandsData, fuelsData] = await Promise.all([
+          brandsRes.json(),
+          fuelsRes.json()
+        ]);
 
         setBrands(brandsData);
         setFuelIcons(fuelsData);
-        setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load data");
-        console.error("Fetch error:", err);
       } finally {
         setIsLoading(false);
       }
@@ -65,11 +63,11 @@ const Banner = () => {
     fetchInitialData();
   }, []);
 
-  const filteredBrands = brands.filter((brand) =>
+  const filteredBrands = brands.filter(brand =>
     brand.brand.toLowerCase().includes(brandSearch.toLowerCase())
   );
 
-  const filteredModels = (selectedBrand?.models || []).filter((model) =>
+  const filteredModels = (selectedBrand?.models || []).filter(model =>
     model.name.toLowerCase().includes(modelSearch.toLowerCase())
   );
 
@@ -108,9 +106,7 @@ const Banner = () => {
       setIsLoading(true);
       const response = await fetch("http://localhost:8000/car/submit-request", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           brand: selectedBrand.brand,
           model: selectedModel.name,
@@ -128,32 +124,41 @@ const Banner = () => {
       setPhone("");
       setError(null);
     } catch (err) {
-      console.error("Submit error:", err);
       setError(err instanceof Error ? err.message : "Submission failed");
     } finally {
       setIsLoading(false);
     }
   };
-
   if (isLoading) {
     return (
-      <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
-        <div className="absolute inset-0 bg-gray-100 z-0" />
-        <div className="relative z-20 w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-          <div className="w-full max-w-lg bg-white shadow-xl p-10 rounded-xl text-center">
-            <p>Loading car data...</p>
-          </div>
+      <section className="relative flex items-center justify-center h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 font-sans">
+        <div className="absolute inset-0 z-0 blur-sm opacity-30 bg-[url('/images/loading-bg.svg')] bg-cover bg-center" />
+        <div className="relative z-10 w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl px-8 py-12 flex flex-col items-center text-center">
+          <div className="mb-6 animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid" />
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">Loading car data</h2>
+          <p className="text-sm text-gray-500">Please wait while we fetch the latest information for you.</p>
         </div>
       </section>
     );
   }
+  
+
+  const renderImage = (url: string, alt: string, className = "") => (
+    <div className={`w-16 h-16 flex items-center justify-center ${className}`}>
+      <img
+        src={`http://localhost:8000${url}`}
+        alt={alt}
+        className="max-w-full max-h-full object-contain"
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.visibility = 'hidden';
+        }}
+      />
+    </div>
+  );
 
   return (
     <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
-      <div
-        className="absolute inset-0 bg-cover bg-center z-0"
-        style={{ backgroundImage: "url('/media/bg2.png')" }}
-      />
+      <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/media/bg2.png')" }} />
 
       <div className="relative z-20 w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-lg bg-white shadow-xl p-10 rounded-xl">
@@ -184,13 +189,9 @@ const Banner = () => {
                   className="flex items-center justify-between w-full border p-4 border-gray-300 hover:border-gray-400 rounded-lg"
                 >
                   <span>
-                    {selectedBrand && selectedModel && selectedFuel
-                      ? `${selectedBrand.brand} ${selectedModel.name} (${selectedFuel})`
-                      : selectedBrand && selectedModel
-                      ? `${selectedBrand.brand} ${selectedModel.name}`
-                      : selectedBrand
-                      ? selectedBrand.brand
-                      : "SELECT YOUR CAR"}
+                    {selectedBrand?.brand || "SELECT YOUR CAR"}
+                    {selectedModel && ` ${selectedModel.name}`}
+                    {selectedFuel && ` (${selectedFuel})`}
                   </span>
                   <BsChevronDown className="text-gray-500" />
                 </button>
@@ -232,10 +233,7 @@ const Banner = () => {
           {currentView === "brands" && (
             <div className="w-full">
               <div className="flex items-center mb-4">
-                <button 
-                  onClick={() => setCurrentView("form")}
-                  className="mr-2 text-gray-500 hover:text-black"
-                >
+                <button onClick={() => setCurrentView("form")} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
                 <h2 className="text-xl font-bold">Select Manufacturer</h2>
@@ -258,24 +256,18 @@ const Banner = () => {
                     {brands.length === 0 ? "No brands available" : "No matching brands found"}
                   </p>
                 ) : (
-                  // Update your image rendering to handle URLs properly
-<div className="grid grid-cols-3 gap-4">
-  {filteredBrands.map((brand) => (
-    <div key={brand.brand} className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onClick={() => handleBrandSelect(brand)}>
-      <div className="w-16 h-16 mb-2 flex items-center justify-center">
-        <img
-          src={`http://localhost:8000${brand.logoUrl}`}
-          alt={brand.brand}
-          className="max-w-full max-h-full object-contain"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none'
-          }}
-        />
-      </div>
-      <p className="text-sm font-medium text-center">{brand.brand}</p>
-    </div>
-  ))}
-</div>
+                  <div className="grid grid-cols-3 gap-4">
+                    {filteredBrands.map((brand) => (
+                      <div 
+                        key={brand.brand} 
+                        className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer" 
+                        onClick={() => handleBrandSelect(brand)}
+                      >
+                        {brand.logoUrl && renderImage(brand.logoUrl, brand.brand)}
+                        <p className="text-sm font-medium text-center mt-2">{brand.brand}</p>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
@@ -284,10 +276,7 @@ const Banner = () => {
           {currentView === "models" && selectedBrand && (
             <div className="w-full">
               <div className="flex items-center mb-4">
-                <button 
-                  onClick={handleBack}
-                  className="mr-2 text-gray-500 hover:text-black"
-                >
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
                 <h2 className="text-xl font-bold">Select Model</h2>
@@ -317,17 +306,7 @@ const Banner = () => {
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
                         onClick={() => handleModelSelect(model)}
                       >
-                        {model.imageUrl && (
-                          <img
-                          src={`http://localhost:8000${model.imageUrl}`}
-                          alt={model.name}
-                          className="w-16 h-16 object-contain mb-2"
-                          onError={(e) => {
-                            console.error("Failed to load image:", e.currentTarget.src);
-                            (e.target as HTMLImageElement).style.display = 'none'
-                          }}
-                        />
-                        )}
+                        {model.imageUrl && renderImage(model.imageUrl, model.name, "mb-3 w-29 h-29")}
                         <p className="font-medium text-center">{model.name}</p>
                       </div>
                     ))}
@@ -337,13 +316,10 @@ const Banner = () => {
             </div>
           )}
 
-          {currentView === "fuels" && selectedModel && selectedModel.fuel_types && (
+          {currentView === "fuels" && selectedModel?.fuel_types && (
             <div className="w-full">
               <div className="flex items-center mb-4">
-                <button 
-                  onClick={handleBack}
-                  className="mr-2 text-gray-500 hover:text-black"
-                >
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
                 <h2 className="text-xl font-bold">Select Fuel Type</h2>
@@ -364,16 +340,7 @@ const Banner = () => {
                           className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
                           onClick={() => handleFuelSelect(fuel)}
                         >
-                          {fuelIcon?.url && (
-                            <img
-                              src={fuelIcon.url}
-                              alt={fuel}
-                              className="w-16 h-16 object-contain mb-2"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).style.display = 'none';
-                              }}
-                            />
-                          )}
+                          {fuelIcon?.url && renderImage(fuelIcon.url, fuel, "mb-2")}
                           <p className="font-medium text-center">{fuel}</p>
                         </div>
                       );
