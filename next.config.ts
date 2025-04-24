@@ -3,7 +3,7 @@ module.exports = {
     domains: [
       'localhost',         
       'caragecarcare.vercel.app', 
-      'https://caragecarcare-backend.onrender.com'  
+      'caragecarcare-backend.onrender.com'   
     ],
   },
 }
