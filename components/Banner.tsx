@@ -40,8 +40,8 @@ const Banner = () => {
         setIsLoading(true);
         
         const [brandsRes, fuelsRes] = await Promise.all([
-          fetch("http://localhost:8000/car/all-brands"),
-          fetch("http://localhost:8000/car/fuel-icons")
+          fetch("NEXT_PUBLIC_API_URL/car/all-brands"),
+          fetch("NEXT_PUBLIC_API_URL/car/fuel-icons")
         ]);
 
         if (!brandsRes.ok || !fuelsRes.ok) throw new Error("Failed to fetch data");
@@ -104,7 +104,7 @@ const Banner = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:8000/car/submit-request", {
+      const response = await fetch("NEXT_PUBLIC_API_URL/car/submit-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,12 +141,11 @@ const Banner = () => {
       </section>
     );
   }
-  
 
   const renderImage = (url: string, alt: string, className = "") => (
     <div className={`w-16 h-16 flex items-center justify-center ${className}`}>
       <img
-        src={`http://localhost:8000${url}`}
+        src={`NEXT_PUBLIC_API_URL${url}`}
         alt={alt}
         className="max-w-full max-h-full object-contain"
         onError={(e) => {
