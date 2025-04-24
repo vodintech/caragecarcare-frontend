@@ -150,7 +150,7 @@ const Banner = () => {
         src={`${process.env.NEXT_PUBLIC_API_URL}${url}`}
         alt={alt}
         width={124}  
-      height={124}
+        height={124}
         className="max-w-full max-h-full object-contain"
         onError={(e) => {
           (e.target as HTMLImageElement).style.visibility = 'hidden';
@@ -160,11 +160,11 @@ const Banner = () => {
   );
 
   return (
-    <section className="relative flex flex-col md:flex-row h-[95vh] w-full overflow-hidden font-sans">
+    <section className="relative flex flex-col lg:flex-row min-h-screen w-full overflow-hidden font-sans">
       <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/media/bg2.png')" }} />
 
-      <div className="relative z-20 w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-        <div className="w-full max-w-lg bg-white shadow-xl p-10 rounded-xl">
+      <div className="relative z-20 w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
+        <div className="w-full max-w-md sm:max-w-lg bg-white shadow-xl p-6 sm:p-8 md:p-10 rounded-xl">
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">
               {error}
@@ -173,14 +173,14 @@ const Banner = () => {
 
           {currentView === "form" && (
             <form onSubmit={handleSubmit} className="w-full">
-              <h2 className="text-3xl font-extrabold mb-4 text-black leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-black leading-tight">
                 Experience Premier Car Services In Chennai
               </h2>
-              <p className="mb-6 text-gray-600 text-lg">
+              <p className="mb-6 text-gray-600 text-base sm:text-lg">
                 Get instant quotes for your car service
               </p>
 
-              <div className="mb-4 p-4 border border-gray-300 rounded-lg flex justify-between items-center">
+              <div className="mb-4 p-3 sm:p-4 border border-gray-300 rounded-lg flex justify-between items-center">
                 <span className="font-medium">CHENNAI</span>
                 <BsChevronDown className="text-gray-500" />
               </div>
@@ -189,7 +189,7 @@ const Banner = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentView("brands")}
-                  className="flex items-center justify-between w-full border p-4 border-gray-300 hover:border-gray-400 rounded-lg"
+                  className="flex items-center justify-between w-full border p-3 sm:p-4 border-gray-300 hover:border-gray-400 rounded-lg text-sm sm:text-base"
                 >
                   <span>
                     {selectedBrand?.brand || "SELECT YOUR CAR"}
@@ -206,26 +206,26 @@ const Banner = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="ENTER MOBILE NUMBER"
-                className="w-full border border-gray-300 p-4 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 p-3 sm:p-4 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 required
               />
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md text-lg"
+                className="w-full bg-blue-600 text-white font-semibold py-3 sm:py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md text-base sm:text-lg"
                 disabled={isLoading}
               >
                 {isLoading ? "PROCESSING..." : "CHECK PRICES FOR FREE"}
               </button>
 
-              <div className="mt-8 flex justify-between text-sm text-gray-600">
+              <div className="mt-6 sm:mt-8 flex justify-between text-xs sm:text-sm text-gray-600">
                 <div className="text-center">
-                  <span className="text-green-600 font-bold text-2xl">4.5</span>/5
+                  <span className="text-green-600 font-bold text-xl sm:text-2xl">4.5</span>/5
                   <br />
                   <span className="text-xs">Based on 100+ Reviews</span>
                 </div>
                 <div className="text-center">
-                  <span className="font-bold text-2xl">1000+</span>
+                  <span className="font-bold text-xl sm:text-2xl">1000+</span>
                   <br />
                   Happy Customers
                 </div>
@@ -239,7 +239,7 @@ const Banner = () => {
                 <button onClick={() => setCurrentView("form")} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
-                <h2 className="text-xl font-bold">Select Manufacturer</h2>
+                <h2 className="text-lg sm:text-xl font-bold">Select Manufacturer</h2>
               </div>
               
               <div className="relative mb-4">
@@ -249,7 +249,7 @@ const Banner = () => {
                   placeholder="Search Brands"
                   value={brandSearch}
                   onChange={(e) => setBrandSearch(e.target.value)}
-                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
                 />
               </div>
               
@@ -259,7 +259,7 @@ const Banner = () => {
                     {brands.length === 0 ? "No brands available" : "No matching brands found"}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     {filteredBrands.map((brand) => (
                       <div 
                         key={brand.brand} 
@@ -267,7 +267,7 @@ const Banner = () => {
                         onClick={() => handleBrandSelect(brand)}
                       >
                         {brand.logoUrl && renderImage(brand.logoUrl, brand.brand)}
-                        <p className="text-sm font-medium text-center mt-2">{brand.brand}</p>
+                        <p className="text-xs sm:text-sm font-medium text-center mt-2">{brand.brand}</p>
                       </div>
                     ))}
                   </div>
@@ -282,7 +282,7 @@ const Banner = () => {
                 <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
-                <h2 className="text-xl font-bold">Select Model</h2>
+                <h2 className="text-lg sm:text-xl font-bold">Select Model</h2>
               </div>
               
               <div className="relative mb-4">
@@ -292,7 +292,7 @@ const Banner = () => {
                   placeholder="Search Models"
                   value={modelSearch}
                   onChange={(e) => setModelSearch(e.target.value)}
-                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2"
+                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
                 />
               </div>
               
@@ -302,15 +302,15 @@ const Banner = () => {
                     {selectedBrand.models.length === 0 ? "No models available" : "No matching models found"}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {filteredModels.map((model) => (
                       <div
                         key={model.name}
                         className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
                         onClick={() => handleModelSelect(model)}
                       >
-                        {model.imageUrl && renderImage(model.imageUrl, model.name, "mb-3 w-29 h-29")}
-                        <p className="font-medium text-center">{model.name}</p>
+                        {model.imageUrl && renderImage(model.imageUrl, model.name, "mb-3 w-20 h-20 sm:w-24 sm:h-24")}
+                        <p className="font-medium text-center text-sm sm:text-base">{model.name}</p>
                       </div>
                     ))}
                   </div>
@@ -325,7 +325,7 @@ const Banner = () => {
                 <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
                   <BsArrowLeft size={20} />
                 </button>
-                <h2 className="text-xl font-bold">Select Fuel Type</h2>
+                <h2 className="text-lg sm:text-xl font-bold">Select Fuel Type</h2>
               </div>
               
               <div className="h-64 overflow-y-auto">
@@ -344,7 +344,7 @@ const Banner = () => {
                           onClick={() => handleFuelSelect(fuel)}
                         >
                           {fuelIcon?.url && renderImage(fuelIcon.url, fuel, "mb-2")}
-                          <p className="font-medium text-center">{fuel}</p>
+                          <p className="font-medium text-center text-sm sm:text-base">{fuel}</p>
                         </div>
                       );
                     })}
