@@ -160,7 +160,7 @@ const Banner = () => {
   );
 
   return (
-    <section className="relative flex flex-col lg:flex-row min-h-screen w-full overflow-hidden font-sans">
+    <section className="relative flex flex-col lg:flex-row min-h-[400px] w-full overflow-hidden font-sans">
       <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/media/bg2.png')" }} />
 
       <div className="relative z-20 w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
