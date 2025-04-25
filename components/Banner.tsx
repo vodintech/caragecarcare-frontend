@@ -163,7 +163,7 @@ const Banner = () => {
     <section className="relative flex flex-col lg:flex-row min-h-[400px] lg:min-h-screen w-full overflow-hidden font-sans">
       <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: "url('/media/bg2.png')" }} />
 
-      <div className="relative z-20 w-full lg:w-1/2 flex items-start pt-8 lg:pt-12 justify-center p-4 sm:p-6 md:p-8 lg:p-12">
+      <div className="relative z-20 w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12">
         <div className="w-full max-w-md sm:max-w-lg bg-white shadow-xl p-6 sm:p-8 md:p-10 rounded-xl">
           {error && (
             <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">
