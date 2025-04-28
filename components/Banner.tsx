@@ -302,7 +302,7 @@ const Banner = () => {
                     {selectedBrand.models.length === 0 ? "No models available" : "No matching models found"}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {filteredModels.map((model) => (
                       <div
                         key={model.name}
