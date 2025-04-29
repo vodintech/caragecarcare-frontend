@@ -167,3 +167,22 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3)); 
+  }
+}
+
+.animate-slide {
+  animation: slide 100s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.animate-slide:hover {
+  animation-play-state: paused;
+}

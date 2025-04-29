@@ -1,12 +1,50 @@
+'use client';
+
 import Image from "next/image";
 
 export default function Brands() {
   const brands = [
-    { name: "Brand1", src: "/media/p1.png" },
-    { name: "Brand2", src: "/brand2.png" }, 
-    { name: "Brand3", src: "/brand3.png" },
-    { name: "Brand4", src: "/brand4.png" },
-    { name: "Brand5", src: "/brand5.png" },
+    { name: "Aston Martin", src: "/brandslogo/Aston Martin.png" },
+    { name: "Audi", src: "/brandslogo/Audi.png" },
+    { name: "Bentley", src: "/brandslogo/Bentley.png" },
+    { name: "BMW", src: "/brandslogo/BMW.png" },
+    { name: "Chevrolet", src: "/brandslogo/Chevrolet.png" },
+    { name: "Citroen", src: "/brandslogo/Citroen.png" },
+    { name: "Daewoo", src: "/brandslogo/Daewoo.png" },
+    { name: "Datsun", src: "/brandslogo/Datsun.png" },
+    { name: "DC", src: "/brandslogo/DC.png" },
+    { name: "EKA", src: "/brandslogo/EKA.png" },
+    { name: "Ferrari", src: "/brandslogo/Ferrari.png" },
+    { name: "Fiat", src: "/brandslogo/Fiat.png" },
+    { name: "Force", src: "/brandslogo/Force.png" },
+    { name: "Ford", src: "/brandslogo/Ford.png" },
+    { name: "Hindustan Motors", src: "/brandslogo/Hindustan Motors.png" },
+    { name: "Honda", src: "/brandslogo/Honda.png" },
+    { name: "Hyundai", src: "/brandslogo/Hyundai.png" },
+    { name: "Isuzu", src: "/brandslogo/Isuzu.png" },
+    { name: "Jaguar", src: "/brandslogo/Jaguar.png" },
+    { name: "Jayem", src: "/brandslogo/Jayem.png" },
+    { name: "Jeep", src: "/brandslogo/Jeep.png" },
+    { name: "Kia", src: "/brandslogo/Kia.png" },
+    { name: "Lamborghini", src: "/brandslogo/Lamborghini.png" },
+    { name: "Land Rover", src: "/brandslogo/Land Rover.png" },
+    { name: "Lexus", src: "/brandslogo/Lexus.png" },
+    { name: "Mahindra", src: "/brandslogo/Mahindra.png" },
+    { name: "Maruti Suzuki", src: "/brandslogo/Maruti Suzuki.png" },
+    { name: "Mercedes Benz", src: "/brandslogo/Mercedes Benz.png" },
+    { name: "MG", src: "/brandslogo/MG.png" },
+    { name: "Mini", src: "/brandslogo/Mini.png" },
+    { name: "Mitsubishi", src: "/brandslogo/Mitsubishi.png" },
+    { name: "Nissan", src: "/brandslogo/Nissan.png" },
+    { name: "Opel", src: "/brandslogo/Opel.png" },
+    { name: "Porsche", src: "/brandslogo/Porsche.png" },
+    { name: "Renault", src: "/brandslogo/Renault.png" },
+    { name: "Rolls Royce", src: "/brandslogo/Rolls Royce.png" },
+    { name: "Skoda", src: "/brandslogo/Skoda.png" },
+    { name: "Tata", src: "/brandslogo/Tata.png" },
+    { name: "Toyota", src: "/brandslogo/Toyota.png" },
+    { name: "Volkswagen", src: "/brandslogo/Volkswagen.png" },
+    { name: "Volvo", src: "/brandslogo/Volvo.png" }
   ];
 
   return (
@@ -16,16 +54,24 @@ export default function Brands() {
         <h2 className="text-3xl font-bold text-white">Brands We Serve</h2>
       </div>
 
-      {/* Auto Slider Wrapper */}
-      <div className="relative w-full overflow-hidden">
-        <div className="animate-slide flex gap-16 px-6 whitespace-nowrap">
-          {/* Duplicate the brands to create an infinite scroll effect */}
-          {[...brands, ...brands].map((brand, index) => (
+      <div className="relative w-full overflow-hidden py-4">
+        <div className="animate-slide flex gap-5 whitespace-nowrap">
+          {[...brands, ...brands, ...brands].map((brand, index) => (
             <div
-              key={index}
-              className="inline-block transition-transform duration-300 hover:scale-110"
+              key={`${brand.name}-${index}`}
+              className="inline-flex items-center justify-center transition-transform duration-300 hover:scale-110 flex-shrink-0"
             >
-              <Image src={brand.src} alt={brand.name} width={80} height={80} />
+              <Image 
+                src={brand.src} 
+                alt={brand.name} 
+                width={200} 
+                height={200}
+                className="object-contain h-20"
+                onError={(e) => {
+                  e.currentTarget.src = '/fallback-image.png';
+                  e.currentTarget.alt = 'Brand logo not available';
+                }}
+              />
             </div>
           ))}
         </div>
