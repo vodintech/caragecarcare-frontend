@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BsChevronDown, BsArrowLeft, BsSearch } from "react-icons/bs";
 import SocialMedia from "@/components/SocialMedia";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface CarModel {
   name: string;
@@ -22,6 +23,7 @@ interface FuelType {
   url: string;
 }
 
+
 const Banner = () => {
   const [brands, setBrands] = useState<CarBrand[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<CarBrand | null>(null);
@@ -34,6 +36,7 @@ const Banner = () => {
   const [brandSearch, setBrandSearch] = useState("");
   const [modelSearch, setModelSearch] = useState("");
   const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -98,39 +101,40 @@ const Banner = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedBrand || !selectedModel || !selectedFuel || !phone) {
-      setError("Please fill all fields");
-      return;
-    }
+  e.preventDefault();
+  if (!selectedBrand || !selectedModel || !selectedFuel || !phone) {
+    setError("Please fill all fields");
+    return;
+  }
 
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          brand: selectedBrand.brand,
-          model: selectedModel.name,
-          phone,
-        }),
-      });
+  try {
+    // Store form data
+    sessionStorage.setItem('carFormData', JSON.stringify({
+      brand: selectedBrand.brand,
+      model: selectedModel.name,
+      fuelType: selectedFuel,
+      phone
+    }));
+    
+    window.location.href = '/service';
+  
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        brand: selectedBrand.brand,
+        model: selectedModel.name,
+        fuelType: selectedFuel,
+        phone,
+      }),
+    });
 
-      if (!response.ok) throw new Error("Submission failed");
-      
-      const result = await response.json();
-      alert(result.message || "Request submitted successfully");
-      setSelectedBrand(null);
-      setSelectedModel(null);
-      setSelectedFuel(null);
-      setPhone("");
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Submission failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error("Submission error:", err);
+    setError("Failed to submit. Please try again.");
+  }
+}; 
+
   if (isLoading) {
     return (
       <section className="relative flex items-center justify-center h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 font-sans">
