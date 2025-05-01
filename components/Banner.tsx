@@ -36,7 +36,6 @@ const Banner = () => {
   const [brandSearch, setBrandSearch] = useState("");
   const [modelSearch, setModelSearch] = useState("");
   const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -115,7 +114,7 @@ const Banner = () => {
       fuelType: selectedFuel,
       phone
     }));
-    
+
     window.location.href = '/service';
   
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
