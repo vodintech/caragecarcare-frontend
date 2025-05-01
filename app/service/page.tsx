@@ -20,8 +20,8 @@ const ServicePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-blue-800 mb-2">Caragecarcare</h1>
+    <div className="max-w-4xl mx-auto p-9 bg-white rounded-lg shadow-md">
+      <h1 className="text-3xl font-bold text-blue-800 mb-2">Caragecarcare </h1>
       <div className="mb-6 p-4 bg-blue-50 rounded-md">
         <h2 className="text-xl font-semibold mb-2">Selected Vehicle</h2>
         <p className="font-medium">{carInfo?.brand ?? 'Brand' } {carInfo?.model ?? 'Model'}</p>

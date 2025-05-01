@@ -667,3 +667,43 @@ const Banner = () => {
 export default Banner;
  */
 }
+
+  {/*const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!selectedBrand || !selectedModel || !selectedFuel || !phone) {
+    setError("Please fill all fields");
+    return;
+  }
+
+  try {
+    // Store form data
+    sessionStorage.setItem('carFormData', JSON.stringify({
+      brand: selectedBrand.brand,
+      model: selectedModel.name,
+      fuelType: selectedFuel,
+      phone
+    }));
+
+    // For Pages Router:
+    window.location.href = '/service'; // Full page reload ensures data is available
+    
+    // OR for App Router:
+    // router.push('/service');
+    
+    // Process submission in background
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        brand: selectedBrand.brand,
+        model: selectedModel.name,
+        fuelType: selectedFuel,
+        phone,
+      }),
+    });
+
+  } catch (err) {
+    console.error("Submission error:", err);
+    setError("Failed to submit. Please try again.");
+  }
+}; */}
