@@ -22,7 +22,6 @@ interface FuelType {
   url: string;
 }
 
-
 const Banner = () => {
   const [brands, setBrands] = useState<CarBrand[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<CarBrand | null>(null);
@@ -37,6 +36,9 @@ const Banner = () => {
   const [modelSearch, setModelSearch] = useState("");
   const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
 
+  // Generate years from current year to 30 years back
+  const years = Array.from({length: 30}, (_, i) => (new Date().getFullYear() - i).toString());
+
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -45,7 +47,6 @@ const Banner = () => {
         const [brandsRes, fuelsRes] = await Promise.all([
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/all-brands`),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/fuel-icons`)
-
         ]);
 
         if (!brandsRes.ok || !fuelsRes.ok) throw new Error("Failed to fetch data");
@@ -79,6 +80,7 @@ const Banner = () => {
     setSelectedBrand(brand);
     setSelectedModel(null);
     setSelectedFuel(null);
+    setSelectedYear(null);
     setCurrentView("models");
     setModelSearch("");
   };
@@ -86,53 +88,62 @@ const Banner = () => {
   const handleModelSelect = (model: CarModel) => {
     setSelectedModel(model);
     setSelectedFuel(null);
+    setSelectedYear(null);
     setCurrentView("fuels");
   };
 
   const handleFuelSelect = (fuel: string) => {
     setSelectedFuel(fuel);
+    setCurrentView("years");
+  };
+
+  const handleYearSelect = (year: string) => {
+    setSelectedYear(year);
     setCurrentView("form");
   };
 
   const handleBack = () => {
     if (currentView === "models") setCurrentView("brands");
     else if (currentView === "fuels") setCurrentView("models");
+    else if (currentView === "years") setCurrentView("fuels");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!selectedBrand || !selectedModel || !selectedFuel || !phone) {
-    setError("Please fill all fields");
-    return;
-  }
+    e.preventDefault();
+    if (!selectedBrand || !selectedModel || !selectedFuel || !selectedYear || !phone) {
+      setError("Please fill all fields");
+      return;
+    }
 
-  try {
-    // Store form data
-    sessionStorage.setItem('carFormData', JSON.stringify({
-      brand: selectedBrand.brand,
-      model: selectedModel.name,
-      fuelType: selectedFuel,
-      phone
-    }));
-
-    window.location.href = '/service';
-  
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      // Store form data
+      sessionStorage.setItem('carFormData', JSON.stringify({
         brand: selectedBrand.brand,
         model: selectedModel.name,
         fuelType: selectedFuel,
-        phone,
-      }),
-    });
+        year: selectedYear,
+        phone
+      }));
 
-  } catch (err) {
-    console.error("Submission error:", err);
-    setError("Failed to submit. Please try again.");
-  }
-}; 
+      window.location.href = '/service';
+    
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand: selectedBrand.brand,
+          model: selectedModel.name,
+          fuelType: selectedFuel,
+          year: selectedYear,
+          phone,
+        }),
+      });
+
+    } catch (err) {
+      console.error("Submission error:", err);
+      setError("Failed to submit. Please try again.");
+    }
+  }; 
 
   if (isLoading) {
     return (
@@ -198,6 +209,7 @@ const Banner = () => {
                     {selectedBrand?.brand || "SELECT YOUR CAR"}
                     {selectedModel && ` ${selectedModel.name}`}
                     {selectedFuel && ` (${selectedFuel})`}
+                    {selectedYear && ` - ${selectedYear}`}
                   </span>
                   <BsChevronDown className="text-gray-500" />
                 </button>
@@ -255,7 +267,6 @@ const Banner = () => {
                   className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
                 />
               </div>
-              
               
               <div className="h-64 overflow-y-auto">
                 {filteredBrands.length === 0 ? (
@@ -352,6 +363,37 @@ const Banner = () => {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {currentView === "years" && (
+            <div className="w-full">
+              <div className="flex items-center mb-4">
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
+                  <BsArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold">Select Manufacturing Year</h2>
+              </div>
+              
+              <div className="h-64 overflow-y-auto">
+                {years.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">No years available</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-3">
+                    {years.map((year) => (
+                      <button
+                        key={year}
+                        className={`p-3 border rounded-lg hover:border-blue-500 cursor-pointer text-center ${
+                          selectedYear === year ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                        }`}
+                        onClick={() => handleYearSelect(year)}
+                      >
+                        <p className="font-medium text-sm sm:text-base">{year}</p>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
