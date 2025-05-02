@@ -114,7 +114,7 @@ const Banner = () => {
       setError("Please fill all fields");
       return;
     }
-
+  
     try {
       // Store form data
       sessionStorage.setItem('carFormData', JSON.stringify({
@@ -124,9 +124,8 @@ const Banner = () => {
         year: selectedYear,
         phone
       }));
-
-      window.location.href = '/service';
-    
+  
+      // Submit the request
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/submit-request`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,12 +137,16 @@ const Banner = () => {
           phone,
         }),
       });
-
+  
+      // Redirect only if submission succeeds
+      window.location.href = '/service';
+  
     } catch (err) {
       console.error("Submission error:", err);
       setError("Failed to submit. Please try again.");
     }
-  }; 
+  };
+  
 
   if (isLoading) {
     return (
