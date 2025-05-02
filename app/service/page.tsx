@@ -7,6 +7,7 @@ type CarInfo = {
   model?: string;
   fuelType?: string;
   phone?: string;
+  year?: string;
 };
 
 const ServicePage: React.FC = () => {
@@ -26,6 +27,7 @@ const ServicePage: React.FC = () => {
         <h2 className="text-xl font-semibold mb-2">Selected Vehicle</h2>
         <p className="font-medium">{carInfo?.brand ?? 'Brand' } {carInfo?.model ?? 'Model'}</p>
         <p className="text-gray-600">{carInfo?.fuelType ?? 'Fuel Type'}</p>
+        <p className="text-gray-600">Year: {carInfo?.year ?? 'Year'}</p>
         <p className="text-gray-600">Phone: {carInfo?.phone ?? 'Phone Number'}</p>
       </div>
     </div>
