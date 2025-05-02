@@ -28,10 +28,11 @@ const Banner = () => {
   const [selectedBrand, setSelectedBrand] = useState<CarBrand | null>(null);
   const [selectedModel, setSelectedModel] = useState<CarModel | null>(null);
   const [selectedFuel, setSelectedFuel] = useState<string | null>(null);
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<"form" | "brands" | "models" | "fuels">("form");
+  const [currentView, setCurrentView] = useState<"form" | "brands" | "models" | "fuels" | "years">("form");
   const [brandSearch, setBrandSearch] = useState("");
   const [modelSearch, setModelSearch] = useState("");
   const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
@@ -136,7 +137,7 @@ const Banner = () => {
   if (isLoading) {
     return (
       <section className="relative flex items-center justify-center h-screen w-full bg-gradient-to-br from-gray-100 to-gray-200 font-sans">
-        <div className="absolute inset-0 z-0 blur-sm opacity-30 bg-[url('/images/loading-bg.svg')] bg-cover bg-center" />
+        <div className="absolute inset-0 z-0 blur-sm opacity-30 bg-[url('/media/bg2.png')] bg-cover bg-center" />
         <div className="relative z-10 w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl px-8 py-12 flex flex-col items-center text-center">
           <div className="mb-6 animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid" />
           <h2 className="text-xl font-semibold text-gray-700 mb-2">Loading car data</h2>
@@ -254,6 +255,7 @@ const Banner = () => {
                   className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
                 />
               </div>
+              
               
               <div className="h-64 overflow-y-auto">
                 {filteredBrands.length === 0 ? (
