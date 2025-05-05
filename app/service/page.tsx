@@ -27,8 +27,29 @@ const ServicePage = () => {
     { name: "Clutch System", icon: "🔄" },
     { name: "Electric Components", icon: "🔌" },
     { name: "Engine", icon: "⚡" },
-    { name: "Engine Cooling System", icon: "🌡️" }
+    { name: "Engine Cooling System", icon: "🌡️" },
+    { name: "Exhaust System", icon: "💨" },
+    { name: "Filters", icon: "🧽" },
+    { name: "Fuel Supply System", icon: "⛽" },
+    { name: "Gaskets and Sealing Rings", icon: "🧵" },
+    { name: "Ignition and Glowplug System", icon: "🔌" },
+    { name: "Interior and Comfort", icon: "🛋️" },
+    { name: "Lighting", icon: "💡" },
+    { name: "Oils and Fluids", icon: "🛢️" },
+    { name: "Pipes and Hoses", icon: "🧰" },
+    { name: "Repair Kits", icon: "🔧" },
+    { name: "Sensors Relays and Control Units", icon: "📟" },
+    { name: "Steering", icon: "🕹️" },
+    { name: "Suspension and Arms", icon: "🚙" },
+    { name: "Towbar Parts", icon: "⚓" },
+    { name: "Transmission", icon: "⚙️" },
+    { name: "Trims", icon: "✂️" },
+    { name: "Tyres and Alloys", icon: "🚘" },
+    { name: "Universal", icon: "🔩" },
+    { name: "Wheels", icon: "🛞" },
+    { name: "Windscreen Cleaning System", icon: "🧼" }
   ];
+  
 
   const CarDetails = () => (
     <div className="space-y-3">
