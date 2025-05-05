@@ -12,11 +12,11 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Services", href: "#services" },
-    { name: "Blog", href: "/blog" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Book Now", href: "/contact" },
+    { name: "Services", href: "" },
+    { name: "Blog", href: "" },
+    { name: "About", href: "" },
+    { name: "Contact", href: "" },
+    { name: "Book Now", href: "" },
   ];
 
   return (

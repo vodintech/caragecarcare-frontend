@@ -122,7 +122,8 @@ const Banner = () => {
         model: selectedModel.name,
         fuelType: selectedFuel,
         year: selectedYear,
-        phone
+        phone,
+        image: selectedModel.imageUrl
       }));
   
       // Submit the request
@@ -230,7 +231,7 @@ const Banner = () => {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-semibold py-3 sm:py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md text-base sm:text-lg"
+                className="w-full bg-blue-600 text-white cursor-pointer font-semibold py-3 sm:py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md text-base sm:text-lg"
                 disabled={isLoading}
               >
                 {isLoading ? "PROCESSING..." : "CHECK PRICES FOR FREE"}
