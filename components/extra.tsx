@@ -1134,3 +1134,397 @@ export default Banner;
   };
   
   export default Banner; */}
+
+  "use client";
+  import React, { useEffect, useState } from 'react';
+  import Navbar from '@/components/Navbar';
+  import Image from 'next/image';
+  import { BsChevronDown, BsArrowLeft, BsSearch } from 'react-icons/bs';
+  
+  interface CarModel {
+    name: string;
+    imageUrl?: string;
+    fuel_types?: string[];
+  }
+  
+  interface CarBrand {
+    brand: string;
+    logoUrl?: string;
+    models: CarModel[];
+  }
+  
+  interface FuelType {
+    type: string;
+    url: string;
+  }
+  
+  const ServicePage = () => {
+    const [carInfo, setCarInfo] = useState<any>({});
+    const [brands, setBrands] = useState<CarBrand[]>([]);
+    const [selectedBrand, setSelectedBrand] = useState<CarBrand | null>(null);
+    const [selectedModel, setSelectedModel] = useState<CarModel | null>(null);
+    const [selectedFuel, setSelectedFuel] = useState<string | null>(null);
+    const [selectedYear, setSelectedYear] = useState<string | null>(null);
+    const [phone, setPhone] = useState("");
+    const [brandSearch, setBrandSearch] = useState("");
+    const [modelSearch, setModelSearch] = useState("");
+    const [fuelIcons, setFuelIcons] = useState<FuelType[]>([]);
+    const [currentView, setCurrentView] = useState<"carInfo" | "brands" | "models" | "fuels" | "years">("carInfo");
+  
+    const years = Array.from({length: 30}, (_, i) => (new Date().getFullYear() - i).toString());
+  
+    useEffect(() => {
+      const fetchInitialData = async () => {
+        try {
+          const [brandsRes, fuelsRes, carData] = await Promise.all([
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/all-brands`),
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/car/fuel-icons`),
+            sessionStorage.getItem('carFormData')
+          ]);
+  
+          if (!brandsRes.ok || !fuelsRes.ok) throw new Error("Failed to fetch data");
+  
+          const [brandsData, fuelsData] = await Promise.all([
+            brandsRes.json(),
+            fuelsRes.json()
+          ]);
+  
+          setBrands(brandsData);
+          setFuelIcons(fuelsData);
+          
+          if (carData) {
+            const parsedData = JSON.parse(carData);
+            setCarInfo(parsedData);
+          }
+        } catch (err) {
+          console.error("Error loading data:", err);
+        }
+      };
+      
+      fetchInitialData();
+    }, []);
+  
+    const filteredBrands = brands.filter(brand =>
+      brand.brand.toLowerCase().includes(brandSearch.toLowerCase())
+    );
+  
+    const filteredModels = (selectedBrand?.models || []).filter(model =>
+      model.name.toLowerCase().includes(modelSearch.toLowerCase())
+    );
+  
+    const handleBrandSelect = (brand: CarBrand) => {
+      setSelectedBrand(brand);
+      setSelectedModel(null);
+      setSelectedFuel(null);
+      setSelectedYear(null);
+      setCurrentView("models");
+      setModelSearch("");
+    };
+  
+    const handleModelSelect = (model: CarModel) => {
+      setSelectedModel(model);
+      setSelectedFuel(null);
+      setSelectedYear(null);
+      setCurrentView("fuels");
+    };
+  
+    const handleFuelSelect = (fuel: string) => {
+      setSelectedFuel(fuel);
+      setCurrentView("years");
+    };
+  
+    const handleYearSelect = (year: string) => {
+      setSelectedYear(year);
+      saveCarSelection();
+    };
+  
+    const handleBack = () => {
+      if (currentView === "models") setCurrentView("brands");
+      else if (currentView === "fuels") setCurrentView("models");
+      else if (currentView === "years") setCurrentView("fuels");
+      else setCurrentView("carInfo");
+    };
+  
+    const saveCarSelection = () => {
+      if (selectedBrand && selectedModel && selectedFuel && selectedYear) {
+        const newCarInfo = {
+          brand: selectedBrand.brand,
+          model: selectedModel.name,
+          fuelType: selectedFuel,
+          year: selectedYear,
+          phone: carInfo.phone || "",
+          image: selectedModel.imageUrl
+        };
+        setCarInfo(newCarInfo);
+        sessionStorage.setItem('carFormData', JSON.stringify(newCarInfo));
+        setCurrentView("carInfo");
+      }
+    };
+  
+    const renderImage = (url: string, alt: string, className = "") => (
+      <div className={`w-16 h-16 flex items-center justify-center ${className}`}>
+        <Image 
+          src={`${process.env.NEXT_PUBLIC_API_URL}${url}`}
+          alt={alt}
+          width={124}  
+          height={124}
+          className="max-w-full max-h-full object-contain"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.visibility = 'hidden';
+          }}
+        />
+      </div>
+    );
+  
+    const parts = [
+      { name: "Maintenance Service Parts", icon: "🛠️" },
+      { name: "Air Conditioning", icon: "❄️" },
+      { name: "Belts Chains and Rollers", icon: "⛓️" },
+      { name: "Bearings", icon: "⚙️" },
+      { name: "Body", icon: "🚗" },
+      { name: "Control Cables", icon: "🎛️" },
+      { name: "Brake System", icon: "🛑" },
+      { name: "Car Accessories", icon: "🎀" },
+      { name: "Clutch System", icon: "🔄" },
+      { name: "Electric Components", icon: "🔌" },
+      { name: "Engine", icon: "⚡" },
+      { name: "Engine Cooling System", icon: "🌡️" }
+    ];
+  
+    const renderCarInfoView = () => (
+      <>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Your Cart</h2>
+          <button 
+            onClick={() => setCurrentView("brands")}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          >
+            Change Car
+          </button>
+        </div>
+        <div className="mb-4 bg-gray-100 rounded-lg overflow-hidden h-48 flex items-center justify-center">
+          {carInfo?.image ? (
+            <Image src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`} 
+              alt={`${carInfo.brand} ${carInfo.model}`} width={300} height={200} 
+              className="w-full h-full object-cover" />
+          ) : <span className="text-gray-500">Car Image</span>}
+        </div>
+        <div className="space-y-3">
+          <p className="font-medium text-lg">
+            {carInfo?.brand || 'Brand'} {carInfo?.model || 'Model'}
+          </p>
+          <p className="text-gray-600 flex items-center">
+            <span className="mr-2">⛽</span>
+            {carInfo?.fuelType || 'Fuel Type'}
+          </p>
+          <p className="text-gray-600 flex items-center">
+            <span className="mr-2">📅</span>
+            Year: {carInfo?.year || 'Year'}
+          </p>
+          <p className="text-gray-600 flex items-center">
+            <span className="mr-2">📞</span>
+            Phone: {carInfo?.phone || 'Phone Number'}
+          </p>
+        </div>
+      </>
+    );
+  
+    const renderCarSelectionView = () => {
+      switch(currentView) {
+        case "brands":
+          return (
+            <div className="w-full">
+              <div className="flex items-center mb-4">
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
+                  <BsArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold">Select Manufacturer</h2>
+              </div>
+              
+              <div className="relative mb-4">
+                <BsSearch className="absolute left-3 top-3 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search Brands"
+                  value={brandSearch}
+                  onChange={(e) => setBrandSearch(e.target.value)}
+                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
+                />
+              </div>
+              
+              <div className="h-64 overflow-y-auto">
+                {filteredBrands.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">
+                    {brands.length === 0 ? "No brands available" : "No matching brands found"}
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                    {filteredBrands.map((brand) => (
+                      <div 
+                        key={brand.brand} 
+                        className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer" 
+                        onClick={() => handleBrandSelect(brand)}
+                      >
+                        {brand.logoUrl && renderImage(brand.logoUrl, brand.brand)}
+                        <p className="text-xs sm:text-sm font-medium text-center mt-2">{brand.brand}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        
+        case "models":
+          return (
+            <div className="w-full">
+              <div className="flex items-center mb-4">
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
+                  <BsArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold">Select Model</h2>
+              </div>
+              
+              <div className="relative mb-4">
+                <BsSearch className="absolute left-3 top-3 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search Models"
+                  value={modelSearch}
+                  onChange={(e) => setModelSearch(e.target.value)}
+                  className="w-full pl-10 border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base"
+                />
+              </div>
+              
+              <div className="h-64 overflow-y-auto">
+                {filteredModels.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">
+                    {selectedBrand?.models.length === 0 ? "No models available" : "No matching models found"}
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {filteredModels.map((model) => (
+                      <div
+                        key={model.name}
+                        className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
+                        onClick={() => handleModelSelect(model)}
+                      >
+                        {model.imageUrl && renderImage(model.imageUrl, model.name, "mb-3 w-20 h-20 sm:w-24 sm:h-24")}
+                        <p className="font-medium text-center text-sm sm:text-base">{model.name}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        
+        case "fuels":
+          return (
+            <div className="w-full">
+              <div className="flex items-center mb-4">
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
+                  <BsArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold">Select Fuel Type</h2>
+              </div>
+              
+              <div className="h-64 overflow-y-auto">
+                {selectedModel?.fuel_types?.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">No fuel types available</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {selectedModel?.fuel_types?.map((fuel) => {
+                      const fuelIcon = fuelIcons.find(f => 
+                        f.type.toLowerCase() === fuel.toLowerCase()
+                      );
+                      return (
+                        <div
+                          key={fuel}
+                          className="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer"
+                          onClick={() => handleFuelSelect(fuel)}
+                        >
+                          {fuelIcon?.url && renderImage(fuelIcon.url, fuel, "mb-2")}
+                          <p className="font-medium text-center text-sm sm:text-base">{fuel}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        
+        case "years":
+          return (
+            <div className="w-full">
+              <div className="flex items-center mb-4">
+                <button onClick={handleBack} className="mr-2 text-gray-500 hover:text-black">
+                  <BsArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg sm:text-xl font-bold">Select Manufacturing Year</h2>
+              </div>
+              
+              <div className="h-64 overflow-y-auto">
+                {years.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">No years available</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-3">
+                    {years.map((year) => (
+                      <button
+                        key={year}
+                        className={`p-3 border rounded-lg hover:border-blue-500 cursor-pointer text-center ${
+                          selectedYear === year ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+                        }`}
+                        onClick={() => handleYearSelect(year)}
+                      >
+                        <p className="font-medium text-sm sm:text-base">{year}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        
+        default:
+          return renderCarInfoView();
+      }
+    };
+  
+    return (
+      <>
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-4 sm:mb-6">Caragecarcare</h1>
+          
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left side - Parts Categories (70%) */}
+            <div className="w-full lg:w-[70%] bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-6">Select the required category of part:</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {parts.map((p,i) => (
+                  <div 
+                    key={i} 
+                    className="flex items-center p-4 hover:bg-blue-50 rounded-md cursor-pointer border border-gray-100"
+                  >
+                    <span className="text-2xl mr-3">{p.icon}</span>
+                    <span className="font-medium">{p.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Right side - Car Info (30%) */}
+            <div className="w-full lg:w-[30%]">
+              <div className="bg-white p-6 rounded-lg shadow-md sticky top-6">
+                {renderCarSelectionView()}
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
+  
+  export default ServicePage;
