@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
-import { icons } from 'lucide-react';
 
 type CarInfo = {
   brand?: string; model?: string; fuelType?: string; 
