@@ -192,14 +192,14 @@ const Banner = () => {
           {currentView === "form" && (
             <form onSubmit={handleSubmit} className="w-full">
               <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-black leading-tight">
-                Experience Premier Car Services In Chennai
+                Experience Premier Car Services In Coimbatore
               </h2>
               <p className="mb-6 text-gray-600 text-base sm:text-lg">
                 Get instant quotes for your car service
               </p>
 
               <div className="mb-4 p-3 sm:p-4 border border-gray-300 rounded-lg flex justify-between items-center">
-                <span className="font-medium">CHENNAI</span>
+                <span className="font-medium">COIMBATORE</span>
                 <BsChevronDown className="text-gray-500" />
               </div>
 
