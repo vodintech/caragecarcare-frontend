@@ -53,7 +53,7 @@ const ServicePage = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service-hierarchy`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/service-hierarchy`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
