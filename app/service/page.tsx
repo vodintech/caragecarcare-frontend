@@ -50,6 +50,7 @@ const ServicePage = () => {
     { name: "Windscreen Cleaning System", icon: "/servicepagelogo/Windscreen_Cleaning_System.png" }
 ];
 
+
   const CarDetails = () => (
     <div className="space-y-3">
       <p className="font-medium text-lg">{carInfo?.brand || 'Brand'} {carInfo?.model || 'Model'}</p>
