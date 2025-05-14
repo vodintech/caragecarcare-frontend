@@ -49,44 +49,43 @@ const ServicePage = () => {
     if (data) setCarInfo(JSON.parse(data));
 
     const fetchServiceHierarchy = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-    
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/service-hierarchy`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include' // If using cookies/sessions
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.detail || 
-        `HTTP error! status: ${response.status}`
-      );
-    }
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/service-hierarchy`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            errorData.detail || 
+            `HTTP error! status: ${response.status}`
+          );
+        }
 
-    const data = await response.json();
-    setCategories(data.categories || []);
-    
-  } catch (err) {
-    console.error('Fetch error:', err);
-    setError(
-      err instanceof Error ? 
-      err.message : 
-      'Failed to load services. Please try again later.'
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+        const data = await response.json();
+        setCategories(data.categories || []);
+        
+      } catch (err) {
+        console.error('Fetch error:', err);
+        setError(
+          err instanceof Error ? 
+          err.message : 
+          'Failed to load services. Please try again later.'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchServiceHierarchy();
   }, []);
 
-  // Navigation handlers
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategory(categoryName);
     setSelectedItem(null);
@@ -108,7 +107,6 @@ const ServicePage = () => {
     else if (selectedCategory) setSelectedCategory(null);
   };
 
-  // Render functions
   const CarDetails = () => (
     <div className="space-y-4">
       <div className="bg-blue-50 p-4 rounded-lg">
@@ -140,15 +138,15 @@ const ServicePage = () => {
         >
           <div className="w-16 h-16 mb-3 relative">
             <Image
-  src={category.icon}
-  alt={category.name}
-  fill
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-  className="object-contain"
-  onError={(e) => {
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+              src={category.icon}
+              alt={category.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+              }}
+            />
           </div>
           <span className="text-sm font-medium text-center text-gray-700">{category.name}</span>
         </div>
@@ -164,7 +162,7 @@ const ServicePage = () => {
       <div className="mt-4">
         <button
           onClick={goBack}
-          className="mb-4 flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+          className="mb-4 flex items-center text-black hover:text-gray-800 text-sm font-medium transition-colors" 
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -182,15 +180,15 @@ const ServicePage = () => {
             >
               <div className="w-16 h-16 mb-3 relative">
                 <Image
-  src={item.image}
-  alt={item.name}
-  fill
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-  className="object-contain"
-  onError={(e) => {
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+                  }}
+                />
               </div>
               <span className="text-sm font-medium text-center text-gray-700">{item.name}</span>
             </div>
@@ -207,7 +205,7 @@ const ServicePage = () => {
       <div className="mt-4">
         <button
           onClick={goBack}
-          className="mb-4 flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+          className="mb-4 flex items-center text-black hover:text-gray-800 text-sm font-medium transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -225,15 +223,15 @@ const ServicePage = () => {
             >
               <div className="w-16 h-16 mb-3 relative">
                 <Image
-  src={subItem.image}
-  alt={subItem.name}
-  fill
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-  className="object-contain"
-  onError={(e) => {
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+                  src={subItem.image}
+                  alt={subItem.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+                  }}
+                />
               </div>
               <span className="text-sm font-medium text-center text-gray-700">{subItem.name}</span>
             </div>
@@ -250,7 +248,7 @@ const ServicePage = () => {
       <div className="mt-4">
         <button
           onClick={goBack}
-          className="mb-4 flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+          className="mb-4 flex items-center text-black hover:text-gray-800 text-sm font-medium transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -267,15 +265,15 @@ const ServicePage = () => {
             >
               <div className="w-16 h-16 mb-3 relative">
                 <Image
-  src={part.image}
-  alt={part.name}
-  fill
-  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-  className="object-contain"
-  onError={(e) => {
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+                  src={part.image}
+                  alt={part.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+                  }}
+                />
               </div>
               <span className="text-sm font-medium text-center text-gray-700">{part.name}</span>
               <button className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded-full hover:bg-blue-700 transition-colors">
@@ -353,19 +351,19 @@ const ServicePage = () => {
             <div className="bg-gray-50 rounded-xl overflow-hidden mb-4 h-48 flex items-center justify-center border border-gray-200">
               {carInfo?.image ? (
                 <Image
-  src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
-  alt={`${carInfo.brand} ${carInfo.model}`}
-  width={300}
-  height={200}
-  sizes="(max-width: 768px) 100vw, 50vw"
-  className="object-contain object-center"
-  style={{ mixBlendMode: 'multiply' }}
-  priority={true}
-  onError={(e) => {
-    console.error("Image failed to load:", e);
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
+                  alt={`${carInfo.brand} ${carInfo.model}`}
+                  width={300}
+                  height={200}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain object-center"
+                  style={{ mixBlendMode: 'multiply' }}
+                  priority={true}
+                  onError={(e) => {
+                    console.error("Image failed to load:", e);
+                    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+                  }}
+                />
               ) : (
                 <div className="text-gray-400 flex flex-col items-center">
                   <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -384,10 +382,13 @@ const ServicePage = () => {
           </div>
         </div>
 
+
         {/* Desktop View */}
         <div className="hidden lg:flex gap-8">
           <div className="w-[70%] bg-white p-7 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-2xl font-bold mb-8 text-gray-800">Browse Parts & Services</h2>
+            {!selectedCategory && (
+              <h2 className="text-2xl font-bold mb-8 text-gray-800">Browse Parts & Services</h2>
+            )}
             {renderContent()}
           </div>
 
@@ -395,23 +396,22 @@ const ServicePage = () => {
             <div className="bg-white p-6 rounded-lg shadow-md sticky top-21">
               <h2 className="text-xl font-bold mb-6 text-gray-800">Your Vehicle</h2>
 
-              {/* Image Box */}
               <div className="mb-6 bg-gray-50 rounded-xl overflow-hidden w-full h-45 flex items-center justify-center border border-gray-200">
                 {carInfo?.image ? (
                   <Image
-  src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
-  alt={`${carInfo.brand} ${carInfo.model}`}
-  width={500}
-  height={300}
-  sizes="(max-width: 1200px) 50vw, 30vw"
-  className="object-contain object-center"
-  style={{ mixBlendMode: 'multiply' }}
-  priority={true}
-  onError={(e) => {
-    console.error("Image failed to load:", e);
-    (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
-  }}
-/>
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
+                    alt={`${carInfo.brand} ${carInfo.model}`}
+                    width={500}
+                    height={300}
+                    sizes="(max-width: 1200px) 50vw, 30vw"
+                    className="object-contain object-center"
+                    style={{ mixBlendMode: 'multiply' }}
+                    priority={true}
+                    onError={(e) => {
+                      console.error("Image failed to load:", e);
+                      (e.target as HTMLImageElement).src = '/servicepagelogo/car-repair.png';
+                    }}
+                  />
                 ) : (
                   <div className="flex items-center justify-center w-full h-48 text-gray-500">
                     <svg className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -422,22 +422,7 @@ const ServicePage = () => {
                 )}
               </div>
 
-              {/* Car Details */}
               <CarDetails />
-
-              {/* Cart Summary (placeholder) */}
-             {/*  <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="font-semibold text-gray-700 mb-3">Cart Summary</h3>
-                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                  <p className="text-sm text-gray-600">Select parts to see your cart total</p>
-                </div>
-                <button 
-                  className="w-full mt-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                  disabled
-                >
-                  Proceed to Checkout
-                </button>
-              </div>*/}
             </div>
           </div>
         </div>
