@@ -52,6 +52,7 @@ export default function Services() {
                 alt={benefit.title}
                 width={60}
                 height={60}
+                style={{ width: "auto" }}
                 className="mb-5 rounded-full shadow-md"
               />
               <h4 className="text-md font-semibold text-blue-900">
