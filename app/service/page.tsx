@@ -110,10 +110,11 @@ const ServicePage = () => {
   const CarDetails = () => (
     <div className="space-y-4">
       <div className="bg-blue-50 p-4 rounded-lg">
-        <p className="font-semibold text-lg text-gray-800">
+        <p className="font-semibold text-lg text-gray-800 text-center">
           {carInfo?.brand || 'Brand'} {carInfo?.model || 'Model'}
         </p>
-        <div className="flex flex-wrap gap-4 mt-2 text-gray-600">
+        <div className="flex flex-wrap gap-4 mt-2 text-gray-600 justify-center"
+>
           <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm">
             <span className="mr-2">⛽</span>
             <span>{carInfo?.fuelType || 'Fuel Type'}</span>
