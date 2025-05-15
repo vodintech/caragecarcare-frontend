@@ -171,7 +171,7 @@ const ServicePage = () => {
           Back to categories
         </button>
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">{selectedCategory}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {category.items.map((item) => (
             <div
               key={item.name}
@@ -179,7 +179,7 @@ const ServicePage = () => {
                          bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md hover:transform hover:-translate-y-1"
               onClick={() => handleItemSelect(item)}
             >
-              <div className="w-16 h-16 mb-3 relative">
+              <div className="relative w-[120px] h-[120px]">
                 <Image
                   src={item.image}
                   alt={item.name}
@@ -214,7 +214,7 @@ const ServicePage = () => {
           Back to {selectedCategory}
         </button>
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">{selectedItem.name}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {selectedItem.subItems.map((subItem) => (
             <div
               key={subItem.name}
@@ -222,7 +222,7 @@ const ServicePage = () => {
                          bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md hover:transform hover:-translate-y-1"
               onClick={() => handleSubItemSelect(subItem)}
             >
-              <div className="w-16 h-16 mb-3 relative">
+              <div className="relative w-[120px] h-[120px]">
                 <Image
                   src={subItem.image}
                   alt={subItem.name}
