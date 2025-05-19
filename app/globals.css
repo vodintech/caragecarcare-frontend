@@ -186,3 +186,14 @@ html {
 .animate-slide:hover {
   animation-play-state: paused;
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+}
