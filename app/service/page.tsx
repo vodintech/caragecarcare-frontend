@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type CarInfo = {
   brand?: string;
@@ -20,17 +21,55 @@ type ServicePackage = {
   warranty: string;
   interval: string;
   services: string[];
+  duration: string;
   recommended?: boolean;
+  category?: string;
 };
+
 
 const ServicePage = () => {
   const [carInfo, setCarInfo] = useState<CarInfo>({});
+  const [packages, setPackages] = useState<ServicePackage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState("Periodic Car Services");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const serviceCategories = [
+    "Periodic Car Services",
+    "Denting Painting",
+    "Mechanical Repairs",
+    "Car AC Services",
+    "Wheel Care",
+    "Car Cleaning",
+    "Car Detailing & Spa",
+    "Custom Repairs",
+  ];
 
   useEffect(() => {
     const data = sessionStorage.getItem('carFormData');
     if (data) setCarInfo(JSON.parse(data));
-  }, []);
+    fetchServicePackages(activeCategory);
+  }, [activeCategory]);
+
+  const fetchServicePackages = async (category: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/service-packages?category=${category}`);
+      if (!response.ok) throw new Error('Failed to fetch service packages');
+      
+      const data = await response.json();
+      setPackages(data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -41,37 +80,27 @@ const ServicePage = () => {
     }
   };
 
-  const packages: ServicePackage[] = [
-    {
-      name: "Basic Service",
-      price: 4665,
-      discountedPrice: 3499,
-      warranty: "1000 Kms or 1 Month",
-      interval: "Every 5000 Kms or 3 Months",
-      services: [
-        "Wiper Fluid Replacement",
-        "Battery Water Top Up",
-        "Car Wash",
-        "Interior Vacuuming",
-        "Engine Oil Replacement"
-      ],
-      recommended: true
-    },
-    {
-      name: "Standard Service",
-      price: 6743,
-      discountedPrice: 4699,
-      warranty: "1000 Kms or 1 Month",
-      interval: "Every 10,000 Kms or 6 Months",
-      services: [
-        "Car Scanning",
-        "Battery Water Top Up",
-        "Interior Vacuuming",
-        "Wiper Fluid Replacement",
-        "Car Wash"
-      ]
+  const handleCategoryClick = (category: string) => {
+    if (activeCategory !== category) {
+      setActiveCategory(category);
     }
-  ];
+  };
+
+  if (loading && packages.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,29 +119,16 @@ const ServicePage = () => {
             
             <div 
               ref={scrollRef}
-              className="flex space-x-4 overflow-x-auto scrollbar-hide py-2 px-10"
+              className="flex gap-x-4 overflow-x-auto scrollbar-hide py-2 px-10"
             >
-              {[
-                "Periodic Car Services",
-                "Denting Painting",
-                "Mechanical Repairs",
-                "Car AC Services",
-                "Wheel Care",
-                "Car Cleaning",
-                "Car Detailing & Spa",
-                "Custom Repairs",
-                "Periodic Car Service",
-                "Denting ",
-                "Mechanical ",
-                "Car AC ",
-                "Wheel ",
-                "Car ",
-                "Car Detailing ",
-                "Custom "
-              ].map((service) => (
-                <div key={service} className="flex flex-col items-center flex-shrink-0">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                   
+              {serviceCategories.map((service) => (
+                <div 
+                  key={service} 
+                  className={`w-24 flex flex-col items-center flex-shrink-0 cursor-pointer transition-colors ${activeCategory === service ? 'text-blue-600' : 'text-gray-600'}`}
+                  onClick={() => handleCategoryClick(service)}
+                >
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-colors ${activeCategory === service ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                    {/* Icon would go here */}
                   </div>
                   <span className="text-sm font-medium text-center">{service}</span>
                 </div>
@@ -134,57 +150,96 @@ const ServicePage = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Scheduled Packages Container (70%) */}
           <div className="lg:w-[70%] bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Scheduled Packages</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">{activeCategory}</h2>
             
-            <div className="space-y-6">
-              {packages.map((pkg, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">{pkg.name}</h3>
-                    <div className="flex items-center text-sm text-gray-600 mb-4 gap-2">
-                      <span>{pkg.warranty} Warranty</span>
-                      <span>•</span>
-                      <span>{pkg.interval} (Recommended)</span>
-                    </div>
-                    
-                    <ul className="space-y-2 mb-4">
-                      {pkg.services.map((service, i) => (
-                        <li key={i} className="flex items-center">
-                          { i % 1 === 0 && (
-  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-600 text-white text-[10px] font-semibold shadow-sm mr-1">
-    ✓
-  </span>
-)}
-
-                          <span>{service}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <button className="text-blue-600 text-sm font-medium mb-4 hover:text-blue-800">
-                      + {Math.floor(Math.random() * 5) + 1} more View All
-                    </button>
-
-                    <div className="border-t border-gray-200 pt-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                          <span className="text-gray-500 line-through mr-2">Rs. {pkg.price}</span>
-                          <span className="text-lg font-bold text-gray-800">Rs. {pkg.discountedPrice}</span>
+            <div className="relative min-h-[300px]">
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="space-y-6"
+                  >
+                    {[1, 2].map((i) => (
+                      <div key={i} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="p-6">
+                          <div className="h-6 w-1/3 bg-gray-200 rounded mb-4"></div>
+                          <div className="h-4 w-3/4 bg-gray-200 rounded mb-6"></div>
+                          <ul className="space-y-3 mb-4">
+                            {[1, 2, 3, 4, 5].map((j) => (
+                              <li key={j} className="flex items-center">
+                                <div className="w-4 h-4 bg-gray-200 rounded-full mr-2"></div>
+                                <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="border-t border-gray-200 pt-4">
+                            <div className="flex justify-between">
+                              <div className="h-6 w-1/4 bg-gray-200 rounded"></div>
+                              <div className="h-10 w-24 bg-gray-200 rounded-md"></div>
+                            </div>
+                          </div>
                         </div>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                          {pkg.recommended ? "Get at 2999" : "Book Now"}
-                        </button>
                       </div>
-                    </div>
-                  </div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={activeCategory}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
+                    {packages.map((pkg, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="p-6">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-2">{pkg.name}</h3>
+                          <div className="flex items-center text-sm text-gray-600 mb-4 gap-2">
+                            <span>{pkg.warranty} Warranty</span>
+                            <span>•</span>
+                            <span>{pkg.interval} (Recommended)</span>
+                            <span>•</span>
+                            <span>{pkg.duration}</span>
+                          </div>
+                          
+                          <ul className="space-y-2 mb-4">
+                            {pkg.services.map((service, i) => (
+                              <li key={i} className="flex items-center">
+                                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-600 text-white text-[10px] font-semibold shadow-sm mr-1">
+                                  ✓
+                                </span>
+                                <span>{service}</span>
+                              </li>
+                            ))}
+                          </ul>
 
-                  {pkg.recommended && (
-                    <div className="bg-blue-50 px-6 py-2 border-t border-gray-200">
-                      <span className="text-blue-800 font-medium">RECOMMENDED</span>
-                    </div>
-                  )}
-                </div>
-              ))}
+                          <div className="border-t border-gray-200 pt-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                              <div>
+                                <span className="text-gray-500 line-through mr-2">Rs. {pkg.price}</span>
+                                <span className="text-lg font-bold text-gray-800">Rs. {pkg.discountedPrice}</span>
+                              </div>
+                              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
+                                {pkg.recommended ? "Get at 2999" : "Book Now"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {pkg.recommended && (
+                          <div className="bg-blue-50 px-6 py-2 border-t border-gray-200">
+                            <span className="text-blue-800 font-medium">RECOMMENDED</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
