@@ -317,6 +317,7 @@ const serviceImages: Record<string, string> = {
                                 <motion.button 
                                   onClick={() => toggleExpandServices(pkg.name)}
                                   className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2 flex items-center"
+                                  whileHover={{x:2}}
                                 >
                                   + {pkg.services.length - 5} more services
                                   <ChevronRight className="w-4 h-4 ml-1" />
@@ -324,14 +325,21 @@ const serviceImages: Record<string, string> = {
                               )}
                               
                               {expandedServices[pkg.name] && pkg.services.slice(5).map((service, i) => (
-                                <li key={i + 5} className="flex items-center">
-                                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 mr-2">
-                                    <Check className="w-3 h-3" />
-                                  </span>
-                                  <span className="text-gray-700">{service}</span>
-                                </li>
-                              ))}
-                            </ul>
+                                  <motion.li
+                                    key={i + 5}
+                                    className="flex items-center"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.03 }}
+                                  >
+                                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 mr-2 flex-shrink-0">
+                                      <Check className="w-3 h-3" />
+                                    </span>
+                                    <span className="text-gray-700">{service}</span>
+                                  </motion.li>
+                                ))}
+                              </ul>
+
 
                             <div className="border-t border-gray-200 pt-4">
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -351,15 +359,17 @@ const serviceImages: Record<string, string> = {
 
                     {packages.length > 4 && (
                       <div className="flex justify-center mt-6">
-                        <button 
+                        <motion.button 
                           onClick={toggleExpandPackages}
-                          className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
+                          className="text-blue-600 hover:text-blue-800 font-medium flex items-center px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
+                          whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
                           {expandedPackages[activeCategory] ? 'Show Less' : `+ ${packages.length - 4} more View More`}
                           {!expandedPackages[activeCategory] && (
                             <ChevronRight className="w-4 h-4 ml-1" />
                           )}
-                        </button>
+                        </motion.button>
                       </div>
                     )}
                   </motion.div>
@@ -374,44 +384,50 @@ const serviceImages: Record<string, string> = {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-18">
               <h2 className="text-xl font-bold mb-4 text-gray-800">Your Vehicle</h2>
               
-              <div className="bg-gray-50 rounded-xl overflow-hidden mb-4 h-48 flex items-center justify-center border border-gray-200">
-                {carInfo?.image ? (
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
-                    alt={`${carInfo.brand} ${carInfo.model}`}
-                    width={300}
-                    height={200}
-                    className="object-contain object-center"
-                    style={{ mixBlendMode: 'multiply' }}
-                  />
-                ) : (
-                  <div className="text-gray-400 flex flex-col items-center">
-                    <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Car Image</span>
-                  </div>
-                )}
-              </div>
+              <motion.div 
+                              className="bg-gray-50 rounded-xl overflow-hidden mb-4 h-48 flex items-center justify-center border-2  border-gray-300 relative"
+                              whileHover={{ scale: 1.01 }}
+                            >
+                              {carInfo?.image ? (
+                                <Image
+                                  src={`${process.env.NEXT_PUBLIC_API_URL}${carInfo.image}`}
+                                  alt={`${carInfo.brand} ${carInfo.model}`}
+                                  width={300}
+                                  height={200}
+                                  className="object-contain object-center p-4"
+                                  style={{ mixBlendMode: 'multiply' }}
+                                />
+                              ) : (
+                                <div className="text-gray-400 flex flex-col items-center">
+                                  <svg className="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  <span>Car Image Preview</span>
+                                </div>
+                              )}
+                             
+                            </motion.div>
+              
 
               <div className="space-y-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="font-semibold text-lg text-gray-800 text-center">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+                  <p className="font-bold text-xl text-gray-800 text-center mb-1">
                     {carInfo?.brand || 'Brand'} {carInfo?.model || 'Model'}
                   </p>
-                  <div className="flex flex-wrap gap-4 mt-2 text-gray-600 justify-center">
-                    <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm">
+                  <div className="flex flex-wrap gap-2 mt-3 justify-center">
+                    <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200">
                       <span className="mr-2">⛽</span>
                       <span>{carInfo?.fuelType || 'Fuel Type'}</span>
                     </div>
-                    <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm">
+                    <div className="flex items-center bg-white px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200">
                       <span className="mr-2">📅</span>
-                      <span>Year: {carInfo?.year || 'Year'}</span>
+                      <span>{carInfo?.year || 'Year'}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            
           </div>
         </div>
       </div>
