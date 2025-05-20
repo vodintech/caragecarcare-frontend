@@ -38,24 +38,34 @@ const ServicePage = () => {
 
 const serviceCategories = [
   "Periodic Car Services",
-  "Denting Painting",
-  "Mechanical Repairs",
-  "Car AC Services",
-  "Wheel Care",
-  "Car Cleaning",
-  "Car Detailing & Spa",
-  "Custom Repairs",
+  "AC Service & Repair",
+  "Denting & Painting",
+  "Batteries",
+  "Tyres & Wheel Care",
+  "Detailing Services",
+  "Car Spa & Cleaning",
+  "Car Inspections",
+  "Windshields & Lights",
+  "Suspension & Fitments",
+  "Clutch & Body Parts",
+  "Insurance Claims",
+  "SOS Service",
 ];
 
 const serviceImages: Record<string, string> = {
-  "Periodic Car Services": "/brandslogo/Mercedes Benz.png",
-  "Denting Painting": "/brandslogo/Mercedes Benz.png",
-  "Mechanical Repairs": "/brandslogo/Mercedes Benz.png",
-  "Car AC Services": "/brandslogo/default.png", 
-  "Wheel Care": "/brandslogo/default.png",
-  "Car Cleaning": "/brandslogo/default.png",
-  "Car Detailing & Spa": "/brandslogo/default.png",
-  "Custom Repairs": "/brandslogo/default.png",
+  "Periodic Car Services": "serviceCategories/service.png",
+  "AC Service & Repair":"serviceCategories/service.png",
+  "Denting & Painting":"serviceCategories/service.png",
+  "Batteries":"serviceCategories/service.png",
+  "Tyres & Wheel Care":"serviceCategories/service.png",
+  "Detailing Services":"serviceCategories/service.png",
+  "Car Spa & Cleaning":"serviceCategories/service.png",
+  "Car Inspections":"serviceCategories/service.png",
+  "Windshields & Lights":"serviceCategories/service.png",
+  "Suspension & Fitments":"serviceCategories/service.png",
+  "Clutch & Body Parts":"serviceCategories/service.png",
+  "Insurance Claims":"serviceCategories/service.png",
+  "SOS Service":"serviceCategories/service.png",
 };
 
   useEffect(() => {
@@ -277,9 +287,6 @@ const serviceImages: Record<string, string> = {
                           <div className="p-6">
                             <div className="flex justify-between items-start mb-2">
                               <h3 className="text-lg font-semibold text-gray-800">{pkg.name}</h3>
-                              {pkg.recommended && (
-                                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">Best Value</span>
-                              )}
                             </div>
                             <div className="flex flex-wrap items-center text-sm text-gray-600 mb-4 gap-2">
                               <span className="bg-gray-100 px-2 py-1 rounded-md flex items-center gap-1.5">
