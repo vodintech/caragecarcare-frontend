@@ -355,7 +355,7 @@ const serviceImages: Record<string, string> = {
                                   <span className="text-lg font-bold text-gray-800">Rs. {pkg.discountedPrice}</span>
                                 </div>
                                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium">
-                                  {pkg.recommended ? "Get at 2999" : "Book Now"}
+                                  +ADD TO CART
                                 </button>
                               </div>
                             </div>
