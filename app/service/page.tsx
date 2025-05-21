@@ -53,19 +53,19 @@ const serviceCategories = [
 ];
 
 const serviceImages: Record<string, string> = {
-  "Periodic Car Services": "serviceCategories/service.png",
-  "AC Service & Repair":"serviceCategories/service.png",
-  "Denting & Painting":"serviceCategories/service.png",
-  "Batteries":"serviceCategories/service.png",
-  "Tyres & Wheel Care":"serviceCategories/service.png",
-  "Detailing Services":"serviceCategories/service.png",
-  "Car Spa & Cleaning":"serviceCategories/service.png",
-  "Car Inspections":"serviceCategories/service.png",
-  "Windshields & Lights":"serviceCategories/service.png",
-  "Suspension & Fitments":"serviceCategories/service.png",
-  "Clutch & Body Parts":"serviceCategories/service.png",
-  "Insurance Claims":"serviceCategories/service.png",
-  "SOS Service":"serviceCategories/service.png",
+  "Periodic Car Services": "serviceCategories/PeriodicCarServices.png",
+  "AC Service & Repair":"serviceCategories/ACService&Repair.png",
+  "Denting & Painting":"serviceCategories/Denting&Painting.png",
+  "Batteries":"serviceCategories/CarInspections.png",
+  "Tyres & Wheel Care":"serviceCategories/Tyres&WheelCare.png",
+  "Detailing Services":"serviceCategories/CarInspections.png",
+  "Car Spa & Cleaning":"serviceCategories/CarInspections.png",
+  "Car Inspections":"serviceCategories/CarInspections.png",
+  "Windshields & Lights":"serviceCategories/Windshields&Lights.png",
+  "Suspension & Fitments":"serviceCategories/Suspension&Fitments.png",
+  "Clutch & Body Parts":"serviceCategories/Clutch&BodyParts.png",
+  "Insurance Claims":"serviceCategories/InsuranceClaims.png",
+  "SOS Service":"serviceCategories/SOSService.png",
 };
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const serviceImages: Record<string, string> = {
                   <img 
                     src={serviceImages[service]} 
                     alt={service}
-                    className="w-10 h-10 object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <span className="text-sm font-medium text-center">{service}</span>
