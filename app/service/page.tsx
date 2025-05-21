@@ -74,22 +74,27 @@ const serviceImages: Record<string, string> = {
     fetchServicePackages(activeCategory);
   }, [activeCategory]);
 
-  const fetchServicePackages = async (category: string) => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/service-packages?category=${category}`);
-      if (!response.ok) throw new Error('Failed to fetch service packages');
-      
-      const data = await response.json();
-      
-      const formattedPackages = data.map((pkg: ServicePackage) => ({
-        ...pkg,
-        services: Array.isArray(pkg.services) ? pkg.services : []
-      }));
-      
-      setPackages(formattedPackages);
-      setExpandedPackages(prev => ({ ...prev, [category]: false }));
-    } catch (err) {
+ const fetchServicePackages = async (category: string) => {
+  try {
+    setLoading(true);
+    // Encode the category to handle special characters like &
+    const encodedCategory = encodeURIComponent(category);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/service-packages?category=${encodedCategory}`
+    );
+    
+    if (!response.ok) throw new Error('Failed to fetch service packages');
+    
+    const data = await response.json();
+    
+    const formattedPackages = data.map((pkg: ServicePackage) => ({
+      ...pkg,
+      services: Array.isArray(pkg.services) ? pkg.services : []
+    }));
+    
+    setPackages(formattedPackages);
+    setExpandedPackages(prev => ({ ...prev, [category]: false }));
+  } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
