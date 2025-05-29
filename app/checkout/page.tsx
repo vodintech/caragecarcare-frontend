@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-
 import { motion } from "framer-motion";
 
 type CartItem = {
@@ -11,11 +10,16 @@ type CartItem = {
   quantity: number;
 };
 
+type CarInfo = {
+  model?: string;
+  phone?: string;
+  [key: string]: any; // Optional: allows additional unknown fields
+};
+
 const CheckoutPage = () => {
   const router = useRouter();
-  const [phone, setPhone] = React.useState("");
   const [cart, setCart] = React.useState<CartItem[]>([]);
-  const [carInfo, setCarInfo] = React.useState<any>({});
+  const [carInfo, setCarInfo] = React.useState<CarInfo>({});
 
   React.useEffect(() => {
     const cartData = sessionStorage.getItem("cart");
@@ -25,9 +29,6 @@ const CheckoutPage = () => {
     if (carData) {
       const parsedCarData = JSON.parse(carData);
       setCarInfo(parsedCarData);
-      if (parsedCarData.phone) {
-        setPhone(parsedCarData.phone);
-      }
     }
   }, []);
 
@@ -56,10 +57,11 @@ const CheckoutPage = () => {
                 <span className="text-gray-600">Car Model: </span>
                 <span className="font-medium">{carInfo?.model || "N/A"}</span>
               </div>
-             
+              <div>
+                <span className="text-gray-600">Phone: </span>
+                <span className="font-medium">{carInfo?.phone || "N/A"}</span>
+              </div>
             </div>
-
-            
           </div>
 
           {/* Right side - Order Summary */}
