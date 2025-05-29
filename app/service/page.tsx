@@ -206,6 +206,10 @@ const ServicePage = () => {
       </div>
     );
   }
+  const proceedToCheckout =()=>{
+    sessionStorage.setItem('cart',JSON.stringify(cart));
+    window.location.href= '/checkout';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -476,7 +480,7 @@ const ServicePage = () => {
             </div>
 
             {/* Cart Section */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 sticky top-16">
               <h2 className="text-xl font-bold mb-4 text-gray-800">Your Cart</h2>
               
               {cart.length === 0 ? (
@@ -547,7 +551,9 @@ const ServicePage = () => {
                       <span>Rs. {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
                     </div>
                     
-                    <button className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition-colors">
+                    <button
+                    onClick={proceedToCheckout}
+                    className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition-colors">
                       Proceed to Checkout
                     </button>
                   </div>
@@ -561,4 +567,4 @@ const ServicePage = () => {
   );
 };
 
-export default ServicePage; 
+export default ServicePage;
