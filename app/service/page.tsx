@@ -3,7 +3,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 import { ChevronRight, ChevronLeft, Check, Shield, Star, Circle, Trash2 } from 'lucide-react';
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup, useTransform, useMotionValue,animate  } from 'framer-motion';
+
 
 type CarInfo = {
   brand?: string;
@@ -211,6 +212,22 @@ const ServicePage = () => {
     window.location.href= '/checkout';
   };
 
+  // This is for Counting Up Animation for Total and Subtotal
+  const Counter = ({ value, duration = 1 }: { value: number; duration?: number }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString());
+
+    useEffect(() => {
+      const controls = animate(count, value, {
+        duration: duration,
+        ease: "easeOut",
+      });
+      return controls.stop;
+    }, [value]);
+
+  return <motion.span>{rounded}</motion.span>;
+};
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -396,12 +413,13 @@ const ServicePage = () => {
                                     <span className="text-gray-500 line-through mr-2">Rs. {pkg.price}</span>
                                     <span className="text-lg font-bold text-gray-800">Rs. {pkg.discountedPrice}</span>
                                   </div>
-                                  <button 
+                                  <motion.button 
                                     onClick={() => addToCart(pkg)}
+                                    whileTap={{scale:0.90}}
                                     className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium"
                                   >
                                     +ADD TO CART
-                                  </button>
+                                  </motion.button>
                                 </div>
                               </div>
                             </div>
@@ -536,19 +554,32 @@ const ServicePage = () => {
                   </LayoutGroup>
                   
                   <div className="border-t pt-4">
+                    {/* Subtotal */}
                     <div className="flex justify-between font-bold text-lg mb-2">
                       <span>Subtotal:</span>
-                      <span>Rs. {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                      <span className="flex">
+                        Rs.&nbsp;
+                        <Counter 
+                          value={cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)} 
+                          duration={0.8}
+                        />
+                      </span>
                     </div>
-                    
                     <div className="flex justify-between text-sm text-gray-500 mb-4">
                       <span>Taxes and fees:</span>
                       <span>Calculated at checkout</span>
                     </div>
-                    
+
+                    {/* Total */}
                     <div className="flex justify-between font-bold text-lg border-t pt-2">
                       <span>Total:</span>
-                      <span>Rs. {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                      <span className="flex">
+                        Rs.&nbsp;
+                        <Counter 
+                          value={cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)} 
+                          duration={0.8}
+                        />
+                      </span>
                     </div>
                     
                     <button
