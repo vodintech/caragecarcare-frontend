@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Check, Shield } from "lucide-react";
+
 import { motion } from "framer-motion";
 
 type CartItem = {
