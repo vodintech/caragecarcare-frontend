@@ -13,7 +13,7 @@ type CartItem = {
 type CarInfo = {
   model?: string;
   phone?: string;
-  [key: string]: any; // Optional: allows additional unknown fields
+  [key: string]: unknown; // Allows additional properties with safe typing
 };
 
 const CheckoutPage = () => {
@@ -27,7 +27,7 @@ const CheckoutPage = () => {
 
     if (cartData) setCart(JSON.parse(cartData));
     if (carData) {
-      const parsedCarData = JSON.parse(carData);
+      const parsedCarData: CarInfo = JSON.parse(carData);
       setCarInfo(parsedCarData);
     }
   }, []);
@@ -55,11 +55,11 @@ const CheckoutPage = () => {
             <div className="space-y-2 mb-6">
               <div>
                 <span className="text-gray-600">Car Model: </span>
-                <span className="font-medium">{carInfo?.model || "N/A"}</span>
+                <span className="font-medium">{carInfo.model ?? "N/A"}</span>
               </div>
               <div>
                 <span className="text-gray-600">Phone: </span>
-                <span className="font-medium">{carInfo?.phone || "N/A"}</span>
+                <span className="font-medium">{carInfo.phone ?? "N/A"}</span>
               </div>
             </div>
           </div>
