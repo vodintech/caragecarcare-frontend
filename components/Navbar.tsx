@@ -25,7 +25,7 @@ const Navbar = () => {
         {/* Logo and Brand */}
         <div className="flex items-center gap-2">
         <Image 
-            src="/media/caragecarcare.png"
+            src="/favicon2.png"
             alt="CarageCarCare Logo"
             className="h-9 w-9 object-contain rounded-full"
             width={500}

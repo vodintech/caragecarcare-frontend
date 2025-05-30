@@ -11,7 +11,7 @@ export const metadata = {
   title: "CarageCarCare",
   description: "Your car's best friend",
   icons: {
-    icon: "/favicon.png",
+    icon: "/favicon3.png",
   },
 };
 
