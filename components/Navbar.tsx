@@ -24,6 +24,7 @@ const Navbar = () => {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo and Brand */}
         <div className="flex items-center gap-2">
+         <Link href="/">
         <Image 
             src="/favicon2.png"
             alt="CarageCarCare Logo"
@@ -31,7 +32,10 @@ const Navbar = () => {
             width={500}
             height={300} 
           />
-          <span className="text-xl font-bold text-black">CarageCarCare</span>
+          </Link> 
+          <Link href="/"> 
+          <span className="text-xl font-bold text-black cursor-pointer">CarageCarCare</span>
+          </Link> 
         </div>
 
         {/* Desktop Navigation */}

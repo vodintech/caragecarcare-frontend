@@ -379,7 +379,7 @@ const ServicePage = () => {
                             <motion.button 
                               onClick={() => addToCart(pkg)}
                               whileTap={{ scale: 0.95 }}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium cursor-pointer"
                             >
                               Add to Cart
                             </motion.button>
@@ -512,8 +512,7 @@ const ServicePage = () => {
                       </span>
                     </div>
                     <div className="flex justify-between text-sm text-gray-500 mb-4">
-                      <span>Taxes and fees:</span>
-                      <span>Calculated at checkout</span>
+                      
                     </div>
                     <div className="flex justify-between font-semibold text-lg border-t border-gray-200 pt-3">
                       <span>Total:</span>
@@ -523,7 +522,7 @@ const ServicePage = () => {
                     </div>
                     <button
                       onClick={proceedToCheckout}
-                      className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition-colors duration-200"
+                      className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition-colors duration-200 cursor-pointer"
                     >
                       Proceed to Checkout
                     </button>
