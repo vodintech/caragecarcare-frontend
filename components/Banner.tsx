@@ -217,7 +217,7 @@ const Banner = () => {
                   </span>
                   <BsChevronDown className="text-gray-500" />
                 </button>
-              </div>
+              </div>  
 
               <input
                 type="tel"
