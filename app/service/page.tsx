@@ -225,8 +225,7 @@ const ServicePage = () => {
       <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
         {/* Vertical Scrollable Sidebar for Categories */}
         <div className="lg:w-1/5">
-          <div className="bg-white rounded-lg shadow-sm p-4 sticky top-20 lg:max-h-[88vh] lg:overflow-y-auto overflow-y-visible h-auto">
-    <h3 className="text-lg font-semibold text-gray-800 mb-4">Service Categories</h3>
+          <div className="bg-white rounded-lg shadow-sm p-4 sticky top-20 max-h-[88vh] overflow-y-auto">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Service Categories</h3>
             <div className="space-y-2">
               {serviceCategories.map((service) => (
