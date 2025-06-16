@@ -27,14 +27,14 @@ const Navbar = () => {
          <Link href="/">
         <Image 
             src="/favicon2.png"
-            alt="CarageCarCare Logo"
+            alt="Drvyn Logo"
             className="h-9 w-9 object-contain rounded-full"
             width={500}
             height={300} 
           />
           </Link> 
           <Link href="/"> 
-          <span className="text-xl font-bold text-black cursor-pointer">CarageCarCare</span>
+          <span className="text-xl font-bold text-black cursor-pointer">Drvyn</span>
           </Link> 
         </div>
 

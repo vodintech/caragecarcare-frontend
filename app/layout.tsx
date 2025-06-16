@@ -8,7 +8,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "CarageCarCare",
+  title: "Drvyn",
   description: "Your car's best friend",
   icons: {
     icon: "/favicon3.png",
