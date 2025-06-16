@@ -197,3 +197,13 @@ html {
 .scroll-container {
   -webkit-overflow-scrolling: touch;
 }
+
+.mobile-no-touch-scroll {
+  touch-action: pan-x; /* Allows horizontal touch actions but not vertical scrolling */
+}
+
+@media (min-width: 1024px) {
+  .mobile-no-touch-scroll {
+    touch-action: auto; /* Restore default touch behavior on desktop */
+  }
+}
