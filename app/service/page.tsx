@@ -522,7 +522,7 @@ const ServicePage = () => {
                     </div>
                     <button
                       onClick={proceedToCheckout}
-                      className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-medium transition-colors duration-200 cursor-pointer"
+                      className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-medium transition-colors duration-200 cursor-pointer"
                     >
                       Proceed to Checkout
                     </button>
