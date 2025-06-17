@@ -81,7 +81,7 @@ const CheckoutPage = () => {
 
       sessionStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
       sessionStorage.removeItem("cart");
-      router.push("/service");
+      router.push("/checkout/confirmation");
     } catch (error) {
       console.error("Order submission error:", error);
       toast.error("Failed to place order. Please try again.");
@@ -116,20 +116,48 @@ const CheckoutPage = () => {
         >
           {/* Left side - Checkout Details */}
           <div className="lg:w-[70%]">
-            
-            {/* Phone Number Section */}
-             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
-              <h2 className="text-xl font-semibold mb-6 text-grey-800 flex items-center">
-                <FiPhone className="mr-2 text-blue-600"/> Customer Information</h2>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Registered Phone Number</label>
-                <span className="bg-gray-100 px-3 py-2 rounded-l-md border border-gray-300">+91</span>
-                <input
-                  type="text"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={carInfo.phone || ""}
-                  readOnly
-                />
+            {/* Customer Information Section */}
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+              <h2 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
+                <FiPhone className="mr-2 text-blue-600"/> Customer Information
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Phone Number */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Registered Phone Number
+                  </label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 py-2 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-500">
+                      +91
+                    </span>
+                    <input
+                      type="text"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={carInfo.phone || ""}
+                      readOnly
+                    />
+                  </div>
+                </div>
+
+                {/* Vehicle Model - Only shows if model exists */}
+                {carInfo.model && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Vehicle Model
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none"
+                      value={carInfo.model}
+                      readOnly
+                    />
+                  </div>
+                )}
+              </div>
             </div>
+
 
             {/* Date and Time Selection */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
@@ -233,7 +261,7 @@ const CheckoutPage = () => {
 
             <div className="border-t border-gray-200 pt-4 mb-6">
               <div className="flex justify-between text-gray-800 items-center text-lg font-semibold">
-                <span>Total:</span>
+                <span>Total Amount:</span>
                 <span>₹{totalPrice}</span>
               </div>
             </div>
@@ -256,8 +284,12 @@ const CheckoutPage = () => {
                 ) : "Confirm & Place Order"}
               </button>
 
-              <div className="mt-4 text-xs text-gray-500">
-                By placing your order, you agree to our Terms of Service and Privacy Policy.
+              <div className="mt-4 text-xs text-gray-500 text-center">
+                 <p>By placing your order, you agree to our</p>
+                <p>
+                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and{' '}
+                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                </p>
               </div>
             </div>
           </div>
