@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+import {FiCalendar, FiClock, FiMapPin, FiPhone, FiShoppingBag} from "react-icons/fi"
 
 type CartItem = {
   packageName: string;
@@ -23,6 +25,9 @@ const CheckoutPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [address, setAddress] = useState("");
+  const [alternatePhone, setAlternatePhone] = useState("");
+  const [serviceCenter, setServiceCenter] = useState("COIMBATORE");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const cartData = sessionStorage.getItem("cart");
@@ -37,19 +42,72 @@ const CheckoutPage = () => {
 
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  const handlePlaceOrder = () => {
-    if (!selectedDate || !selectedTime || !address) {
-      alert("Please fill in all required fields");
-      return;
+  const validateForm = () => {
+    if (!selectedDate || !selectedTime) {
+      toast.error("Please select date and time for service");
+      return false;
     }
-    alert("Order placed successfully!");
-    sessionStorage.removeItem("cart");
-    router.push("/");
+
+    if (!address.trim()) {
+      toast.error("Please enter a valid pickup address");
+      return false;
+    }
+
+    if (alternatePhone && !/^\d{10}$/.test(alternatePhone)) {
+      toast.error("Please enter a valid 10-digit alternate phone number");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      const bookingDetails = {
+        phone: carInfo.phone || "",
+        date: selectedDate,
+        time: selectedTime,
+        address,
+        alternatePhone,
+        serviceCenter,
+        totalPrice,
+        cartItems: cart
+      };
+
+      sessionStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+      sessionStorage.removeItem("cart");
+      router.push("/service");
+    } catch (error) {
+      console.error("Order submission error:", error);
+      toast.error("Failed to place order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      {/*Header*/}
+      <div className="bg-white p-6 border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <h1 className=" text-2xl font-bold text-gray-800">Complete Your Booking</h1>
+            <div className="flex items-center space-x-2">
+              <FiShoppingBag className="text-blue-600 "/>
+              <span className="font-medium">
+                {cart.length} {cart.length === 1 ? 'item' : 'items'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,13 +115,13 @@ const CheckoutPage = () => {
           className="flex flex-col lg:flex-row gap-8"
         >
           {/* Left side - Checkout Details */}
-          <div className="lg:w-[70%] bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Secure Checkout</h1>
+          <div className="lg:w-[70%]">
             
             {/* Phone Number Section */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Account</h2>
-              <div className="flex items-center border-b border-gray-200 pb-2">
+             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+              <h2 className="text-xl font-semibold mb-6 text-grey-800 flex items-center">
+                <FiPhone className="mr-2 text-blue-600"/> Customer Information</h2>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Registered Phone Number</label>
                 <span className="bg-gray-100 px-3 py-2 rounded-l-md border border-gray-300">+91</span>
                 <input
                   type="text"
@@ -71,25 +129,28 @@ const CheckoutPage = () => {
                   value={carInfo.phone || ""}
                   readOnly
                 />
-              </div>
             </div>
 
             {/* Date and Time Selection */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Select Date and Time of Service</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+              <h2 className="text-xl flex items-center font-semibold mb-6 text-gray-800">
+                <FiCalendar className="mr-2 text-blue-600"/>Service Schedule</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <FiCalendar className="mr-2 text-gray-500"/>Date *</label>
                   <input
                     type="date"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                    <FiClock className="mr-2 text-gray-500"/>Time *</label>
                   <input
                     type="time"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -102,73 +163,107 @@ const CheckoutPage = () => {
             </div>
             
             {/* Address Selection */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Set Pickup Location</h2>
+            <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-200">
+              <h2 className="text-xl flex font-semibold mb-6 text-gray-800 items-center"><FiMapPin className="mr-2 text-blue-600"/>Pickup Details</h2>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pickup Address *</label>
               <textarea
-                placeholder="Enter your address"
+                placeholder="Enter your complete address including landmarks"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 required
               />
             </div>
-
+            
             {/* Alternate Phone number */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Alternate Phone Number</h2>
+            <div className="mb-6">
+              <h2 className="block text-sm font-medium mb-2 text-gray-700">Alternate Phone Number</h2>
               <input
-              type="tel"
-              maxLength={10}
-              placeholder="ENTER ALTERNATE NUMBER"
-              className="w-full border border-gray-300 p-3 sm:p-4 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                type="tel"
+                maxLength={10}
+                placeholder="Enter 10-digit alternate number"
+                className="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                value={alternatePhone}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, '');
+                  setAlternatePhone(value);
+                }}
               />
             </div>
 
             {/* Service Centre */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Select Service Centre</h2>
-              <select className="w-full border border-gray-300 p-3 sm:p-4 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
-                <option>COIMBATORE</option>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Service Center</label>
+              <select 
+                className="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                value={serviceCenter}
+                onChange={(e) => setServiceCenter(e.target.value)}
+              >
+                <option value="COIMBATORE">Coimbatore Service Center</option>
+                <option value="CHENNAI" disabled>(Coming Soon)</option>
               </select>
             </div>
           </div>
+        </div>
 
           {/* Right side - Order Summary */}
-          <div className="lg:w-[30%] bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Order Summary</h2>
+          <div className="lg:w-[30%]">
+          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 sticky top-8">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 border-r">Order Summary</h2>
 
             {cart.length > 0 ? (
-              <ul className="space-y\3 mb-4">
+              <ul className="space-y-4 mb-6">
                 {cart.map((item, index) => (
                   <li key={index} className="flex justify-between text-sm text-gray-700">
-                    <div>
-                      {item.packageName} × <span className="font-medium">{item.quantity}</span>
+                    <div className="flex items-center">
+                     <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded mr-3">{item.quantity}</span>
+                    <span className="text-sm">{item.packageName}</span>
                     </div>
                     <div className="font-semibold">₹{item.price * item.quantity}</div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-500 mb-4">Your cart is empty.</p>
+              <div className="mb-6 text-center py-8">
+                  <FiShoppingBag className="mx-auto text-gray-400 text-3xl mb-2" />
+                  <p className="text-gray-500">Your cart is empty</p>
+                </div>
             )}
 
-            <div className="border-t pt-4 mb-6">
-              <div className="flex justify-between text-gray-800 font-semibold">
+            <div className="border-t border-gray-200 pt-4 mb-6">
+              <div className="flex justify-between text-gray-800 items-center text-lg font-semibold">
                 <span>Total:</span>
                 <span>₹{totalPrice}</span>
               </div>
             </div>
 
-            <button
-              onClick={handlePlaceOrder}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-              disabled={cart.length === 0}
-            >
-              Place Order
-            </button>
+                <button
+                onClick={handlePlaceOrder}
+                className={`w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 ${
+                  isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                } ${cart.length === 0 ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed" : ""}`}
+                disabled={cart.length === 0 || isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : "Confirm & Place Order"}
+              </button>
+
+              <div className="mt-4 text-xs text-gray-500">
+                By placing your order, you agree to our Terms of Service and Privacy Policy.
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
+    </div>
     </div>
   );
 };

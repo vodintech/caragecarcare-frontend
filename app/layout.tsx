@@ -1,5 +1,6 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { Toaster } from 'react-hot-toast';
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,12 +18,27 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<React.PropsWithChildren>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} antialiased`}
-       suppressHydrationWarning={true}
-      >{children}</body>
+      <body 
+        className={`${poppins.className} antialiased`}
+        suppressHydrationWarning={true}
+      >
+        {children}
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#fff',
+              color: '#000',
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }
