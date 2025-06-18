@@ -264,8 +264,7 @@ const CheckoutPage = () => {
                 <span>Total Amount:</span>
                 <span>₹{totalPrice}</span>
               </div>
-            </div>
-
+            </div> 
                 <button
                 onClick={handlePlaceOrder}
                 className={`w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 transition-all duration-200 ${
