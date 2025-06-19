@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Download, Calendar, Clock, MapPin, Phone, Package } from "lucide-react";
+import { motion } from "framer-motion";
+import {  Calendar, Clock, MapPin, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { label } from "framer-motion/client";
+
 
 type BookingDetails = {
   phone: string;
