@@ -206,7 +206,7 @@ const CheckoutPage = () => {
             
             {/* Alternate Phone number */}
             <div className="mb-6">
-              <h2 className="block text-sm font-medium mb-2 text-gray-700">Alternate Phone Number</h2>
+              <h2 className="block text-sm font-medium mb-2 text-gray-700">Alternate Phone Number (Optional)</h2>
               <input
                 type="tel"
                 maxLength={10}
