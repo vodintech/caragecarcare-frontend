@@ -95,8 +95,8 @@ const CheckoutPage = () => {
       {/*Header*/}
       <div className="bg-white p-6 border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center">
-            <h1 className=" text-2xl font-bold text-gray-800">Complete Your Booking</h1>
+          <div className="flex justify-between items-center flex-col sm:flex-row">
+            <h1 className=" text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Complete Your Booking</h1>
             <div className="flex items-center space-x-2">
               <FiShoppingBag className="text-blue-600 "/>
               <span className="font-medium">
