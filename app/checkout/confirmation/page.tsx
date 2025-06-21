@@ -20,6 +20,43 @@ type BookingDetails = {
   }>;
 };
 
+// Custom Checkmark Component with SVG animation
+const AnimatedCheckmark = () => (
+  <motion.svg
+    width="64"
+    height="64"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="text-white"
+  >
+    <motion.circle
+      cx="12"
+      cy="12"
+      r="10"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{
+        duration: 0.5,
+        ease: "easeInOut",
+      }}
+    />
+    <motion.path
+      d="M8 12L11 15L16 9"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{
+        delay: 0.3,
+        duration: 0.3,
+        ease: "easeInOut",
+      }}
+    />
+  </motion.svg>
+);
+
 const ConfirmationPage = () => {
   const router = useRouter();
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
@@ -51,50 +88,13 @@ const ConfirmationPage = () => {
     });
   };
 
-  // Custom Checkmark Component with SVG animation
-  const AnimatedCheckmark = () => (
-    <motion.svg
-      width="64"
-      height="64"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-white"
-    >
-      <motion.circle
-        cx="12"
-        cy="12"
-        r="10"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{
-          duration: 0.5,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.path
-        d="M8 12L11 15L16 9"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{
-          delay: 0.3,
-          duration: 0.3,
-          ease: "easeInOut",
-        }}
-      />
-    </motion.svg>
-  );
-
   if (!bookingDetails) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-gray-600 text-lg"
+          className="text-indigo-600 text-lg"
         >
           Loading...
         </motion.div>
@@ -103,180 +103,226 @@ const ConfirmationPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:py-16">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden w-full sm:max-w-3xl"
+        className="w-full max-w-6xl bg-white rounded-3xl shadow-xl overflow-hidden border border-white/20"
       >
-        {/* Header with animated checkmark */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 sm:p-8 text-white">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 20,
-            }}
-            className="flex items-center justify-center mb-4"
-          >
-            <AnimatedCheckmark />
-          </motion.div>
+        {/* Header section */}
+        <div className="relative h-48 bg-gradient-to-r from-blue-400 to-blue-500 overflow-hidden">
+          <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-indigo-500/20 rounded-full"></div>
+          <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/20 rounded-full"></div>
           
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.3 }}
-            className="text-2xl sm:text-3xl font-bold text-center"
-          >
-            Booking Confirmed!
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.3 }}
-            className="text-blue-100 text-center mt-2 text-sm sm:text-base"
-          >
-            Your service has been successfully scheduled. A confirmation has been sent to your phone.
-          </motion.p>
-        </div>
-
-        {/* Booking details section */}
-        <div className="p-4 sm:p-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6"
-          >
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2 flex items-center">
-              <Calendar className="h-5 w-5 mr-2 text-blue-600" />
-              Booking Summary
-            </h2>
-            
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-              {[
-                {
-                  icon: <Phone className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Phone Number",
-                  value: `+91 ${bookingDetails.phone}`
-                },
-                {
-                  icon: <Phone className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Alternate Number",
-                  value: bookingDetails.alternatePhone ? `+91 ${bookingDetails.alternatePhone}` : "Not provided"
-                },
-                {
-                  icon: <Calendar className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Service Date",
-                  value: formatDate(bookingDetails.date)
-                },
-                {
-                  icon: <Clock className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Service Time",
-                  value: formatTime(bookingDetails.time)
-                },
-                {
-                  icon: <MapPin className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Service Center",
-                  value: bookingDetails.serviceCenter
-                },
-                {
-                  icon: <MapPin className="h-5 w-5 mr-2 text-blue-600 mt-1" />,
-                  label: "Pickup Address",
-                  value: bookingDetails.address
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + index * 0.1 }}
-                  className="flex items-start"
-                >
-                  <div className="flex items-start">
-                    {item.icon}
-                    <div>
-                      <span className="text-gray-600 block text-sm sm:text-base">{item.label}</span>
-                      <span className="font-medium text-sm sm:text-base">{item.value}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Service details section */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="bg-gray-50 rounded-xl p-4 sm:p-6"
-          >
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <Package className="h-5 w-5 mr-2 text-blue-600" />
-              Service Details
-            </h3>
-            
-            <ul className="space-y-2 sm:space-y-3">
-              <AnimatePresence>
-                {bookingDetails.cartItems.map((item, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.6 + index * 0.1 }}
-                    className="flex justify-between items-center text-sm sm:text-base"
-                  >
-                    <span className="text-gray-700">
-                      {item.packageName} × {item.quantity}
-                    </span>
-                    <span className="font-medium">₹{item.price * item.quantity}</span>
-                  </motion.li>
-                ))}
-              </AnimatePresence>
-            </ul>
-            
+          <div className="relative z-10 p-8 h-full flex flex-col items-center justify-center text-center">
             <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              className="mb-4"
+            >
+              <AnimatedCheckmark />
+            </motion.div>
+            
+            <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.0 }}
-              className="mt-4 sm:mt-6 pt-4 border-t border-gray-200 flex justify-between font-bold text-base sm:text-lg"
+              transition={{ delay: 0.3, duration: 0.3 }}
+              className="text-3xl font-bold text-white mb-2"
             >
-              <span>Total Amount</span>
-              <span>₹{bookingDetails.totalPrice}</span>
-            </motion.div>
-          </motion.div>
-
-          {/* Action buttons */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.2 }}
-            className="mt-6 sm:mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.print()}
-              className="flex items-center justify-center px-4 py-2 sm:px-6 sm:py-3 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-200 text-sm sm:text-base"
-            >
-              <Download className="h-5 w-5 mr-2" />
-              Print Receipt
-            </motion.button>
+              Booking Confirmed!
+            </motion.h1>
             
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => router.push("/service")}
-              className="flex items-center justify-center px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 text-sm sm:text-base"
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+              className="text-blue-100 text-lg"
             >
-              Book Another Service
-            </motion.button>
-          </motion.div>
+              Your service is scheduled successfully
+            </motion.p>
+          </div>
+        </div>
+
+        {/* Main content area */}
+        <div className="flex flex-col lg:flex-row">
+          {/* Left panel - Booking details */}
+          <div className="w-full lg:w-1/2 p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
+            <div className="relative">
+              {/* Vertical timeline line */}
+              <div style={{ left: '1.55rem', width:'0.1345rem' }} className="absolute top-11 h-160 bg-gradient-to-b from-indigo-200 to-blue-200"></div>
+              
+              <h2 className="text-xl font-bold text-gray-800 mb-8 flex items-center ml-2">
+                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 mr-3 shadow-sm">
+                  <Calendar className="h-5 w-5" />
+                </span>
+                Booking Details
+              </h2>
+
+              <div className="space-y-6 pl-12">
+                {[
+                  {
+                    icon: <Phone className="h-5 w-5 text-blue-600" />,
+                    label: "Contact Number",
+                    value: `+91 ${bookingDetails.phone}`,
+                    color: "bg-blue-100",
+                  },
+                  ...(bookingDetails.alternatePhone ? [{
+                    icon: <Phone className="h-5 w-5 text-blue-600" />,
+                    label: "Alternate Number",
+                    value: `+91 ${bookingDetails.alternatePhone}`,
+                    color: "bg-blue-100",
+                  }] : []),
+                  {
+                    icon: <Calendar className="h-5 w-5 text-blue-600" />,
+                    label: "Service Date",
+                    value: formatDate(bookingDetails.date),
+                    color: "bg-blue-100",
+                  },
+                  {
+                    icon: <Clock className="h-5 w-5 text-blue-600" />,
+                    label: "Service Time",
+                    value: formatTime(bookingDetails.time),
+                    color: "bg-blue-100",
+                  },
+                  {
+                    icon: <MapPin className="h-5 w-5 text-blue-600" />,
+                    label: "Service Center",
+                    value: bookingDetails.serviceCenter,
+                    color: "bg-blue-100",
+                  },
+                  {
+                    icon: <MapPin className="h-5 w-5 text-blue-600" />,
+                    label: "Pickup Address",
+                    value: bookingDetails.address,
+                    color: "bg-blue-100",
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className="relative"
+                  >
+                    {/* Timeline dot */}
+                    <div className={`absolute -left-7 top-5 w-3 h-3 rounded-full ${item.color} border-2 border-white shadow-sm`}></div>
+                    
+                    <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-center mb-1">
+                        <span className={`p-1.5 rounded-lg ${item.color} mr-3`}>
+                          {item.icon}
+                        </span>
+                        <h3 className="font-semibold text-gray-700">{item.label}</h3>
+                      </div>
+                      <p className="text-gray-600 pl-10">{item.value}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right panel - Service summary */}
+          <div className="w-full lg:w-1/2 p-8">
+            <div className="sticky top-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-8 flex items-center">
+                <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 mr-3 shadow-sm">
+                  <Package className="h-5 w-5" />
+                </span>
+                Service Summary
+              </h2>
+
+              {/* Receipt card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-8"
+              >
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border-b border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-gray-700">ORDER SUMMARY</h3>
+                    <span className="text-sm text-gray-500">#{Math.floor(Math.random() * 10000)}</span>
+                  </div>
+                </div>
+
+                <div className="divide-y divide-gray-100">
+                  {bookingDetails.cartItems.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                      className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-800">{item.packageName}</p>
+                        <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                      </div>
+                      <p className="font-semibold">₹{item.price * item.quantity}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="p-4 bg-gray-50 border-t border-gray-200">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span>₹{bookingDetails.totalPrice}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-gray-200 mt-2">
+                      <span className="font-bold text-gray-800">Total Amount</span>
+                      <span className="text-xl font-bold text-blue-600">
+                        ₹{(bookingDetails.totalPrice ).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Action buttons */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="grid grid-cols-1 gap-3"
+              >
+                <motion.button
+                  whileHover={{ y: -2, boxShadow: "0 4px 12px rgba(79, 70, 229, 0.2)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => window.print()}
+                  className="px-6 py-3 bg-white border border-blue-600 text-blue-600 rounded-lg font-medium flex items-center justify-center hover:bg-blue-50 transition-all"
+                >
+                  <Download className="h-5 w-5 mr-2" />
+                  Download Receipt
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ y: -2, boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push("/service")}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-600 text-white rounded-lg font-medium flex items-center justify-center hover:from-blue-700 hover:to-indigo-700 transition-all"
+                >
+                  Book Another Service
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push("/")}
+                  className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium flex items-center justify-center hover:bg-gray-200 transition-all"
+                >
+                  Back to Home
+                </motion.button>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
