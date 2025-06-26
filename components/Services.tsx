@@ -46,7 +46,7 @@ const itemVariants: Variants = {
 
 export default function Services() {
   return (
-    <section id="services" className="py-16 lg:py-24 bg-gray-50">
+    <section id="services" className="py-10 lg:py-3 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header - unchanged */}
         <motion.div
@@ -110,12 +110,6 @@ export default function Services() {
           transition={{ delay: 0.4 }}
           className="text-center mt-16"
         >
-          <Link
-            href="/services"
-            className="inline-block px-8 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-300 shadow-md hover:shadow-lg"
-          >
-            View All Services
-          </Link>
         </motion.div>
       </div>
     </section>
