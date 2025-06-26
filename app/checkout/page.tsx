@@ -66,29 +66,56 @@ const CheckoutPage = () => {
 
     setIsSubmitting(true);
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); 
-      const bookingDetails = {
-        phone: carInfo.phone || "",
-        date: selectedDate,
-        time: selectedTime,
-        address,
-        alternatePhone,
-        serviceCenter,
-        totalPrice,
-        cartItems: cart
-      };
+  try {
+    const bookingDetails = {
+      brand: carInfo.brand || "",
+      model: carInfo.model || "",
+      fuelType: carInfo.fuelType || "",
+      year: carInfo.year || "",
+      phone: carInfo.phone || "",
+      date: selectedDate,
+      time: selectedTime,
+      address,
+      alternatePhone,
+      serviceCenter,
+      totalPrice,
+      cartItems: cart
+    };
 
-      sessionStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
-      sessionStorage.removeItem("cart");
-      router.push("/checkout/confirmation");
-    } catch (error) {
-      console.error("Order submission error:", error);
-      toast.error("Failed to place order. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/submit-booking`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookingDetails),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to submit booking");
     }
-  };
+
+    const result = await response.json();
+    
+    // Store booking details in sessionStorage for confirmation page
+    sessionStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+    sessionStorage.removeItem("cart");
+    router.push("/checkout/confirmation");
+  } catch (error) {
+    let errorMessage = "Failed to place order. Please try again.";
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    }
+
+    console.error("Order submission error:", error);
+    toast.error(errorMessage);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">

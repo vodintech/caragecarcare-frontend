@@ -20,7 +20,6 @@ type BookingDetails = {
   }>;
 };
 
-// Custom Checkmark Component with SVG animation
 const AnimatedCheckmark = () => (
   <motion.svg
     width="64"
@@ -102,6 +101,8 @@ const ConfirmationPage = () => {
     );
   }
 
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
       <motion.div
@@ -155,7 +156,10 @@ const ConfirmationPage = () => {
           <div className="w-full lg:w-1/2 p-8 border-b lg:border-b-0 lg:border-r border-gray-100">
             <div className="relative">
               {/* Vertical timeline line */}
-              <div style={{ left: '1.55rem', width:'0.1345rem' }} className="absolute top-11 h-160 bg-gradient-to-b from-indigo-200 to-blue-200"></div>
+              <div 
+                style={{ left: '1.55rem' }} 
+                className="absolute top-11 bottom-4 w-0.5 bg-gradient-to-b from-indigo-200 to-blue-200"
+              ></div>
               
               <h2 className="text-xl font-bold text-gray-800 mb-8 flex items-center ml-2">
                 <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 mr-3 shadow-sm">
@@ -164,7 +168,7 @@ const ConfirmationPage = () => {
                 Booking Details
               </h2>
 
-              <div className="space-y-6 pl-12">
+              <div className="space-y-6 pl-8 sm:pl-12">
                 {[
                   {
                     icon: <Phone className="h-5 w-5 text-blue-600" />,
@@ -201,6 +205,7 @@ const ConfirmationPage = () => {
                     label: "Pickup Address",
                     value: bookingDetails.address,
                     color: "bg-blue-100",
+                    isAddress: true
                   }
                 ].map((item, index) => (
                   <motion.div
@@ -213,14 +218,16 @@ const ConfirmationPage = () => {
                     {/* Timeline dot */}
                     <div className={`absolute -left-7 top-5 w-3 h-3 rounded-full ${item.color} border-2 border-white shadow-sm`}></div>
                     
-                    <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="bg-gray-50 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow max-w-full">
                       <div className="flex items-center mb-1">
                         <span className={`p-1.5 rounded-lg ${item.color} mr-3`}>
                           {item.icon}
                         </span>
                         <h3 className="font-semibold text-gray-700">{item.label}</h3>
                       </div>
-                      <p className="text-gray-600 pl-10">{item.value}</p>
+                      <p className={`text-gray-600 pl-10 ${item.isAddress ? 'break-words whitespace-pre-wrap' : ''}`}>
+                        {item.value}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -279,7 +286,7 @@ const ConfirmationPage = () => {
                     <div className="flex justify-between items-center pt-2 border-t border-gray-200 mt-2">
                       <span className="font-bold text-gray-800">Total Amount</span>
                       <span className="text-xl font-bold text-blue-600">
-                        ₹{(bookingDetails.totalPrice ).toFixed(2)}
+                        ₹{bookingDetails.totalPrice.toFixed(2)}
                       </span>
                     </div>
                   </div>
