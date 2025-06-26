@@ -1,5 +1,3 @@
-import { FaFacebook, FaYoutube, FaInstagram, FaWhatsapp } from "react-icons/fa";
-
 const SocialMedia = () => {
   return (
     <div className="fixed bottom-10 right-6 flex flex-col space-y-4 z-20">
