@@ -16,7 +16,7 @@ const Navbar = () => {
     { name: "Blog", href: "" },
     { name: "About", href: "" },
     { name: "Contact", href: "" },
-    { name: "Book Now", href: "" },
+    { name: "Login", href: "" },
   ];
 
   return (
@@ -42,7 +42,7 @@ const Navbar = () => {
         <ul className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           {navLinks.map((link) => (
             <li key={link.name}>
-              {link.name === "Book Now" ? (
+              {link.name === "Login" ? (
                 <Link
                   href={link.href}
                   className="bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition"
@@ -82,7 +82,7 @@ const Navbar = () => {
       {isOpen && (
         <ul className="md:hidden flex flex-col mt-3 space-y-2 text-gray-700 font-medium px-2">
           {navLinks.map((link) =>
-            link.name === "Book Now" ? (
+            link.name === "Login" ? (
               <li key={link.name} className="flex justify-center my-2">
                 <Link
                   href={link.href}

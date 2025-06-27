@@ -46,7 +46,7 @@ const itemVariants: Variants = {
 
 export default function Services() {
   return (
-    <section id="services" className="py-10 lg:py-3 bg-gray-50">
+    <section id="services" className="py-10 lg:py- bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header - unchanged */}
         <motion.div
