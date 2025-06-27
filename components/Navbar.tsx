@@ -81,7 +81,7 @@ const Navbar = () => {
             <motion.li 
               key={link.name}
               className="relative"
-             
+
               transition={{ type: "spring", stiffness: 400 }}
             >
               {link.name === "Login" ? (
